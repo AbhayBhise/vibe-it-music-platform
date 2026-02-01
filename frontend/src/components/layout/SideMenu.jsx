@@ -5,8 +5,35 @@ import logo from "../../assets/wsa-logo.jpg";
 import "../../css/sidemenu/SideMenu.css";
 import { CiUser } from "react-icons/ci";
 import { AiOutlineHome, AiOutlineSearch, AiOutlineHeart } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { openAuthModal } from "../../redux/slices/uiSlice";
 
-const SideMenu = ({ setView, view }) => {
+const SideMenu = ({ setView, view, onOpenEditProfile }) => {
+  const dispatch = useDispatch();
+  const {user, isAuthenticated} = useSelector((state)=>state.auth);
+
+  const displayUser ={
+    name: user?.name || "Alien",
+    avatar: user?.avatar || "",
+  }
+
+  const handleSearchClick =()=>{
+    if(!isAuthenticated){
+      dispatch(openAuthModal("login"));
+      return;
+    }
+    setView("Search");
+  };
+
+  const handleFavouriteClick =()=>{
+    if(!isAuthenticated){
+      dispatch(openAuthModal("login"));
+      return;
+    }
+    setView("favourite");
+  };
+
+
   const getNavBtnClass = (item) =>
     `sidemenu-nav-btn ${view === item ? "active" : ""}`;
   return (
@@ -31,7 +58,7 @@ const SideMenu = ({ setView, view }) => {
             </li>
             <li>
               <button
-                onClick={() => setView("search")}
+                onClick={handleSearchClick}
                 className={getNavBtnClass("search")}
               >
                 <AiOutlineSearch className="sidemenu-nav-icon" size={18} />
@@ -41,7 +68,7 @@ const SideMenu = ({ setView, view }) => {
             <li>
               <button
                 className={getNavBtnClass("favourite")}
-                onClick={() => setView("favourite")}
+                onClick={handleFavouriteClick}
               >
                 <AiOutlineHeart size={18} />
                 <span>Favourite</span>
@@ -59,11 +86,13 @@ const SideMenu = ({ setView, view }) => {
           <div className="sidemenu-username-wrapper">
             <div className="sidemenu-username">Guest</div>
           </div>
-          <div className="settings-container">
-            <button type="button" className="sidemenu-settings-btn">
+         {isAuthenticated && (
+           <div className="settings-container">
+            <button type="button" onClick={onOpenEditProfile} className="sidemenu-settings-btn">
               <IoIosSettings size={20} />
             </button>
           </div>
+         )}
         </div>
       </aside>
     </>

@@ -4,7 +4,7 @@ import { getSongs,getPlaylistByTag,toggleFavourite } from "../controllers/songCo
 const songRouter = express.Router();
 
 songRouter.get("/",getSongs);
-songRouter.get("/getPlaylistByTag/:tag",getPlaylistByTag);
+songRouter.get("/playlistByTag/:tag",getPlaylistByTag);
 songRouter.post("/favourite",protect,toggleFavourite);
 songRouter.get("/favourites",protect,(req,res)=>{
     res.json(req.user.favourites);

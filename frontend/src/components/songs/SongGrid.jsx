@@ -1,11 +1,25 @@
 import React from "react";
-
-const SongGrid = ({ songs }) => {
+import "../../css/songs/SongGrid.css"
+import SongCard from "./SongCard";
+const SongGrid = ({ songs, onSelectFavourite }) => {
+  if(!songs || songs.length ===0){
+    return(
+      <div className="song-grid-empty" >
+        <p className="empty-text" >No Favourites songs yet.</p>
+        <p className="empty-subtext" >Start exploring and add songs to your Favourites!</p>
+        </div>
+        
+    )
+  }
   return (
-    <div>
-      {songs.map((song) => (
-        <div key={song.id}>{song.name || song.title}</div>
-      ))}
+    <div className="song-grid-wrapper">
+      <h2 className="song-grid-heading">Your Favourites</h2>
+      <div className="song-grid">
+        {songs.map((song)=>(
+          <SongCard key={song.id} song={song} onSelectFavourite={()=> onSelectFavourite(song)} />
+        ))}
+      </div>
+      
     </div>
   );
 };

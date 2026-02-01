@@ -24,7 +24,7 @@ const getPlaylistByTag = async (req, res) => {
         const params= {
             client_id: clientId,
             format: "jsonpretty",
-            tag: tag,
+            tags: tag,
             limit: limit,
         };
         const response = await axios.get("https://api.jamendo.com/v3.0/tracks/", { params });

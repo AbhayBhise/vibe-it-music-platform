@@ -21,19 +21,19 @@ const Homepage = () => {
 
   const { audioRef, currentIndex, currentSong, currentTime, isPlaying, loopEnabled, duration, isMuted, shuffleEnabled, playbackSpeed, volume, playSongAtIndex, handleTogglePlay, handleNext, handlePrev, handleTimeUpdate, handleLoadedMetadata, handleEnded, handleToggleMute, handleToggleLoop, handleToggleShuffle, handleChangeSpeed, handleSeek, handleChangeVolume, } = useAudioPlayer(songsToDisplay);
 
-  const playerState={
+  const playerState = {
     currentSong, isPlaying, currentTime, duration, isMuted, loopEnabled, shuffleEnabled, playbackSpeed, volume
   }
 
   const playerControls = {
     playSongAtIndex,
-    handleTogglePlay, 
+    handleTogglePlay,
     handleNext,
-    handlePrev, 
+    handlePrev,
     handleEnded
   }
 
-  const playerFeatures ={
+  const playerFeatures = {
     onToggleMute: handleToggleMute,
     onToggleLoop: handleToggleLoop,
     onToggleShuffle: handleToggleShuffle,
@@ -54,7 +54,7 @@ const Homepage = () => {
       }
     };
     fetchInitialSongs();
-  });
+  },[]);
 
 
   const loadPlaylist = async (tag) => {
@@ -63,7 +63,10 @@ const Homepage = () => {
       return;
     }
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/songs/getPlaylistByTag/${tag}}`,);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/songs/playlistByTag/${tag}`
+      );
+
       setSongs(res.data.results || []);
     } catch (error) {
       console.error("Failed to load playlist. ", error);
@@ -72,52 +75,52 @@ const Homepage = () => {
   };
 
   // When user clicks on a song in a table
-  const handleSelectSong = (index)=>{
-playSongAtIndex(index);
+  const handleSelectSong = (index) => {
+    playSongAtIndex(index);
   }
 
-const handlePlayFavourite = (songs)=>{
-  const favourites = auth.user?.favourites || [];
-  if(!favourites.length) return;
+  const handlePlayFavourite = (songs) => {
+    const favourites = auth.user?.favourites || [];
+    if (!favourites.length) return;
 
-  const index = auth.user.favourites.findIndex((fav)=>fav.id === songs.id);
-  setSongs(auth.user.favourites);
-  setView("home");
-  setTimeout(()=>{
-    if(index != -1){
-      playSongAtIndex(index)
-    }
-  }, 0);
-};
+    const index = auth.user.favourites.findIndex((fav) => fav.id === songs.id);
+    setSongs(auth.user.favourites);
+    setView("home");
+    setTimeout(() => {
+      if (index != -1) {
+        playSongAtIndex(index)
+      }
+    }, 0);
+  };
 
   return (
     <div className="homepage-root">
-      <audio ref={audioRef} 
-      onTimeUpdate={handleTimeUpdate} 
-      onLoadedMetadata={handleLoadedMetadata} 
-      onEnded={handleEnded}>
+      <audio ref={audioRef}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onEnded={handleEnded}>
         {currentSong &&
-         <source 
-         src={currentSong.audio} 
-         type="audio/mpeg" />}      
-         </audio>
+          <source
+            src={currentSong.audio}
+            type="audio/mpeg" />}
+      </audio>
 
       <div className="homepage-main-wrapper">
         {/* Sidebar */}
         <div className="homepage-sidebar">
-          <SideMenu setView={setView} view={view} />
+          <SideMenu setView={setView} view={view} openEditProfile={()=> setOpenEditProfile(true)} />
         </div>
         {/* Main Content */}
         <div className="homepage-content">
-          <MainArea 
-          view={view} 
-          currentIndex={currentIndex} 
-          onSelectSong={handleSelectSong} 
-          onSelectFavourite={handlePlayFavourite}
-          onSelectTag={loadPlaylist}
-          songsToDisplay={songsToDisplay}
-          setSearchSongs={setSearchSongs}
-          
+          <MainArea
+            view={view}
+            currentIndex={currentIndex}
+            onSelectSong={handleSelectSong}
+            onSelectFavourite={handlePlayFavourite}
+            onSelectTag={loadPlaylist}
+            songsToDisplay={songsToDisplay}
+            setSearchSongs={setSearchSongs}
+
           />
         </div>
       </div>
