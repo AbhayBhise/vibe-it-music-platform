@@ -20,7 +20,7 @@ const Signup = () => {
   const[base64Image, setBase64Image] = useState("");
 
 
-  const handelImageChange = (e) => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0]; 
 
     if (!file) return;
@@ -35,7 +35,7 @@ const Signup = () => {
     
   };
 
-  const handelSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Signup logic here
     dispatch(clearError());
@@ -71,7 +71,7 @@ const Signup = () => {
       <h3 className='signup-title'>Create an Account</h3>
 
       <p className="signup-subtitle">Join us today and start your musical journey!</p>
-      <form className="signup-form" onSubmit={handelSubmit}>
+      <form className="signup-form" onSubmit={handleSubmit}>
         <div>
           <div className="profile-image-container">
             {previewImage ? (
@@ -79,7 +79,7 @@ const Signup = () => {
             ) : (
               <div className="profile-placeholder"><CiUser size={40} /></div>
             )}
-            <label className='image-upload-icon'>📸 <input type='file' accept='image/*' hidden onChange={handelImageChange}/> </label>
+            <label className='image-upload-icon'>📸 <input type='file' accept='image/*' hidden onChange={handleImageChange}/> </label>
           </div>
           <Input label={"Name"} value={fullName} type={"text"} placeholder={"John Wick"} onChange={(e) => setFullName(e.target.value)} />
 

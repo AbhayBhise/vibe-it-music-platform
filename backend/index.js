@@ -26,6 +26,6 @@ app.use(cors(
 
 
 app.use("/api/auth", router);
-app.use("/api/song",songRouter)
+app.use("/api/songs",songRouter)
 
 app.listen(PORT, ()=>console.log(`Server is running on Port ${PORT}`));

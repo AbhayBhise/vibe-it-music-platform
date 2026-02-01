@@ -1,3 +1,4 @@
+import { useReducer, useRef, useState } from "react";
 
 
 const initialAudioState = {
@@ -116,7 +117,7 @@ const useAudioPlayer = (songs) => {
     }
 
     // Next Song
-    const handelNext = () => {
+    const handleNext = () => {
         if (!songs.length) return;
 
         if (audioState.currentIndex === null) {
@@ -188,7 +189,7 @@ const useAudioPlayer = (songs) => {
             })
         }
         else {
-            handelNext();
+            handleNext();
         }
     };
     const handleToggleMute = () => {
@@ -278,7 +279,7 @@ const useAudioPlayer = (songs) => {
         // Playback control functions
         playSongAtIndex,
         handleTogglePlay,
-        handelNext,
+        handleNext,
         handlePrev,
 
         // Audio event handlers
