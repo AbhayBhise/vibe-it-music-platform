@@ -111,8 +111,8 @@ const useAudioPlayer = (songs) => {
             audio.play().then(() => dispatch({ type: "PLAY" })).catch((e) => console.error("Play Error", e))
         }
         else {
-            audio.paused();
-            dispatch({ type: "PAUSED" })
+            audio.pause();
+            dispatch({ type: "PAUSE" })
         }
     }
 
@@ -178,12 +178,13 @@ const useAudioPlayer = (songs) => {
     };
 
     const handleEnded = () => {
+        const audio = audioRef.current;
         if (!audio) return;
         if (audioState.loopEnabled) {
             audio.currentTime = 0;
             audio.play().then(() => {
                 dispatch({ type: "PLAY" });
-                dispatch({ type: "SET_CURRENT_TIME", playload: 0 });
+                dispatch({ type: "SET_CURRENT_TIME", payload: 0 });
             }).catch((e) => {
                 console.error("Replay error.", e);
             })
@@ -230,6 +231,7 @@ const useAudioPlayer = (songs) => {
     };
 
     const handleSeek =(newTime)=>{
+        const audio = audioRef.current;
         if(!audio) return;
         audio.currentTime = newTime;
         dispatch({type: "SET_CURRENT_TIME", payload: newTime})
@@ -265,7 +267,7 @@ const useAudioPlayer = (songs) => {
         currentIndex: audioState.currentIndex,
         currentSong: audioState.currentSong,
         isPlaying: audioState.isPlaying, 
-        currentTime: audioState, 
+        currentTime: audioState.currentTime, 
         isLoading: audioState.isLoading, 
         duration,
 

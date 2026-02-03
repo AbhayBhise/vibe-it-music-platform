@@ -53,6 +53,7 @@ const signup = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 avatar: user.avatar,
+                favourites: user.favourites || [],
             },
             token,
 
@@ -91,7 +92,9 @@ const login = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                avatar: user.avatar,
+                favourites: user.favourites || [],
             },
             token,
         },

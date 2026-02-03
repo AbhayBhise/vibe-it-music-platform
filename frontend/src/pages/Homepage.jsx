@@ -23,15 +23,15 @@ const Homepage = () => {
 
   const playerState = {
     currentSong, isPlaying, currentTime, duration, isMuted, loopEnabled, shuffleEnabled, playbackSpeed, volume
-  }
+  };
 
   const playerControls = {
     playSongAtIndex,
     handleTogglePlay,
     handleNext,
     handlePrev,
-    handleEnded
-  }
+    handleSeek
+  };
 
   const playerFeatures = {
     onToggleMute: handleToggleMute,
@@ -39,7 +39,7 @@ const Homepage = () => {
     onToggleShuffle: handleToggleShuffle,
     onChangeSpeed: handleChangeSpeed,
     onChangeVolume: handleChangeVolume
-  }
+  };
 
   useEffect(() => {
     const fetchInitialSongs = async () => {
@@ -109,7 +109,7 @@ const Homepage = () => {
         {/* Sidebar */}
         <div className="homepage-sidebar">
           <SideMenu setView={setView} view={view} openEditProfile={()=> setOpenEditProfile(true)} />
-        </div>
+        </div> 
         {/* Main Content */}
         <div className="homepage-content">
           <MainArea
@@ -125,7 +125,7 @@ const Homepage = () => {
         </div>
       </div>
       {/* Footer Player */}
-      <Footer />
+      <Footer playerState={playerState} playerControls={playerControls} playerFeatures={playerFeatures} />
     </div>
   );
 };

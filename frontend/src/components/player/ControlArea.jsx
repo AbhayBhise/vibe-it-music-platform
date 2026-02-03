@@ -7,11 +7,96 @@ import {
   TbPlayerTrackPrevFilled,
 } from "react-icons/tb";
 import "../../css/footer/ControlArea.css";
+import { useDispatch, useSelector } from "react-redux";
+import { updateFavourites } from "../../redux/slices/authSlice";
+import { formatTime } from "../utils/helper";
+import axios from "axios";
 
-const ControlArea = () => {
-  const isPlaying = false;
-  const currentTime = 0;
-  const duration = 180;
+const ControlArea = ({ playerState, playerControls }) => {
+  // const isPlaying = false;
+  // const currentTime = 0;
+  // const duration = 180;
+
+  const dispatch = useDispatch();
+  const { user, token, isAuthenticated } = useSelector((state) => state.auth)
+  const { isPlaying, currentTime, duration, currentSong, isLoading } = playerState;
+  const {
+    
+    handleTogglePlay,
+    handleNext,
+    handlePrev,
+    handleSeek
+  } = playerControls;
+
+  const currentSongId = currentSong?.id;
+
+  const isLiked = Boolean(
+    currentSongId &&
+      user?.favourites?.some((fav) => String(fav.id) === String(currentSongId))
+  );
+  // const handleLike = async () => {
+  //   if (!isAuthenticated || !currentSong) return;
+  //   try {
+  //     const songData = {
+  //       id: currentSong.id,
+  //       name: currentSong.name,
+  //       artist_name: currentSong.artist_name,
+  //       image: currentSong.image,
+  //       duration: currentSong.duration,
+  //       audio: currentSong.audio
+  //     };
+
+  //     const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/songs/favourite`, { song: songData },
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+
+  //     console.log("LIKE API RESPONSE:", res.data);
+
+  //     dispatch(updateFavourites(res.data));
+
+  //   } catch (error) {
+  //     console.error(
+  //       "Like failed:",
+  //       error.response?.data || error.message
+  //     );
+  //   }
+
+  // };
+
+  const handleLike = async () => {
+  if (!isAuthenticated || !currentSong) return;
+
+  try {
+    const songData = {
+      id: currentSong.id,
+      name: currentSong.name,
+      artist_name: currentSong.artist_name,
+      image: currentSong.image,
+      duration: currentSong.duration,
+      audio: currentSong.audio,
+    };
+
+    const res = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/api/songs/favourite`,
+      { song: songData },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    console.log("LIKE API RESPONSE:", res.data);
+
+    // ✅ ONLY pass favourites array into Redux
+    dispatch(updateFavourites(res.data.favourites));
+
+  } catch (error) {
+    console.error(
+      "Like failed:",
+      error.response?.data || error.message
+    );
+  }
+};
+
   return (
     <div className="control-root">
       {/* Control Buttons */}
@@ -20,23 +105,31 @@ const ControlArea = () => {
           type="button"
           aria-label="previous"
           className="control-icon-btn"
+          onClick={handlePrev}
         >
           <TbPlayerTrackPrevFilled color="#a855f7" size={24} />
         </button>
-        <button type="button" aria-label="play" className="control-play-btn">
-          {isPlaying ? (
+        <button type="button" aria-label="play" className="control-play-btn" onClick={handleTogglePlay}>
+          {isLoading ? (
+            <ImSpinner2 className="animate-spin" color="#a855f7" size={36} />
+          ) : isPlaying ? (
             <GiPauseButton color="#a855f7" size={42} />
           ) : (
             <FaCirclePlay color="#a855f7" size={42} />
           )}
         </button>
 
-        <button type="button" aria-label="next" className="control-icon-btn">
+        <button type="button" aria-label="next" className="control-icon-btn" onClick={handleNext}>
           <TbPlayerTrackNextFilled color="#a855f7" size={24} />
         </button>
-        <button type="button" aria-label="like" className="control-icon-btn">
-          <FaRegHeart color="#a855f7" size={22} />
-        </button>
+        {
+          isAuthenticated && (
+            <button type="button" aria-label="like" className="control-icon-btn" onClick={handleLike} >
+              {isLiked ? (<FaHeart color="#ff3c3c" size={22} />) : (<FaRegHeart color="#a855f7" size={22} />)}
+            </button>
+           )
+        } 
+
       </div>
 
       <div className="control-progress-wrapper">
@@ -46,10 +139,16 @@ const ControlArea = () => {
           max={duration}
           value={currentTime}
           className="control-progress"
+          onChange={(e) => handleSeek(Number(e.target.value))}
+          style={
+            {
+              background: `linear-gradient(to right, #a855f7 ${duration ? (currentTime / duration) * 100 : 0}%, #333 ${duration ? (currentTime / duration) * 100 : 0}%)`
+            }
+          }
         />
         <div className="control-times">
-          <span>0.00</span>
-          <span>3.00</span>
+          <span>{formatTime(currentTime)}</span>
+          <span>{formatTime(duration)}</span>
         </div>
       </div>
     </div>

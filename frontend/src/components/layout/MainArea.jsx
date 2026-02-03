@@ -17,6 +17,8 @@ const MainArea = ({ view,
   songsToDisplay,
   setSearchSongs, }) => {
   const auth = useSelector((state) => state.auth);
+
+
   return (
     <div className="mainarea-root">
       <div className="mainarea-top">

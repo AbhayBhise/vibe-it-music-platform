@@ -29,7 +29,7 @@ useEffect(() => {
           Authorization: `Bearer ${storedToken}`,
         },
       });
-      dispatch(setUser({user: res.data.user, token: storedToken}));
+      dispatch(setUser({user: res.data, token: storedToken}));
     } catch (error) {
       console.error("Error fetching user data GET ME FAILED: ", error);
       dispatch(logout());

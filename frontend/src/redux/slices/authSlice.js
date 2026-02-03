@@ -44,12 +44,15 @@ const authSlice = createSlice({
             localStorage.removeItem("token");
         },       
         
-        updateFavourites:(state,action) => {
-            if(state.user) {
-                state.user.favourites = action.payload;
-            }
+        updateFavourites: (state, action) => {
+  if (state.user) {
+    state.user = {
+      ...state.user,
+      favourites: action.payload,
+    };
+  }
+},
 
-        },
 
         clearError:(state) => {
             state.error = null;
