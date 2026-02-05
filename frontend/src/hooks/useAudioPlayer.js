@@ -170,7 +170,7 @@ const useAudioPlayer = (songs) => {
         setDuration(audio.duration || 0);
         audio.playbackRate = audioState.playbackSpeed;
         audio.volume = audioState.volume;
-        audio.muted = audioState.muted;
+        audio.muted = audioState.ismuted;
 
         dispatch({
             type: "PLAY"

@@ -84,7 +84,7 @@ const SideMenu = ({ setView, view, onOpenEditProfile }) => {
           </div>
 
           <div className="sidemenu-username-wrapper">
-            <div className="sidemenu-username">Guest</div>
+            <div className="sidemenu-username">{displayUser.name}</div>
           </div>
          {isAuthenticated && (
            <div className="settings-container">

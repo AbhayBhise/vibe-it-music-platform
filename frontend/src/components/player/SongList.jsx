@@ -45,7 +45,7 @@ const SongList = ({ songs,onSelectSong, currentIndex }) => {
               <tr key={song.id}
                onClick={()=> onSelectSong(index)}
               
-                className={`songlist-row ${currentIndex == index? "song-row-active" : ""}`}
+                className={`songlist-row ${currentIndex == index? "songlist-row-active" : ""}`}
               
               
               >

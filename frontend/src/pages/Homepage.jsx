@@ -9,6 +9,8 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import useAudioPlayer from "../hooks/useAudioPlayer";
 import { current } from "@reduxjs/toolkit";
+import Modal from "../components/common/Modal";
+import EditProfile from "../components/auth/EditProfile";
 
 const Homepage = () => {
   const [view, setView] = useState("home");
@@ -108,7 +110,7 @@ const Homepage = () => {
       <div className="homepage-main-wrapper">
         {/* Sidebar */}
         <div className="homepage-sidebar">
-          <SideMenu setView={setView} view={view} openEditProfile={()=> setOpenEditProfile(true)} />
+          <SideMenu setView={setView} view={view} onOpenEditProfile={()=> setOpenEditProfile(true)} />
         </div> 
         {/* Main Content */}
         <div className="homepage-content">
@@ -126,6 +128,12 @@ const Homepage = () => {
       </div>
       {/* Footer Player */}
       <Footer playerState={playerState} playerControls={playerControls} playerFeatures={playerFeatures} />
+
+      {openEditProfile && (
+        <Modal onClose={()=> setOpenEditProfile(false)}>
+          <EditProfile onClose={()=> setOpenEditProfile(false)} />
+        </Modal>
+      )}  
     </div>
   );
 };
