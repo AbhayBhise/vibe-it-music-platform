@@ -1,101 +1,175 @@
 import React from "react";
-
 import { IoIosSettings } from "react-icons/io";
-import logo from "../../assets/wsa-logo.jpg";
+import {
+  AiOutlineHome,
+  AiOutlineSearch,
+  AiOutlineHeart,
+  AiOutlineFolder,
+} from "react-icons/ai";
+import { MdLibraryMusic, MdAlbum, MdPerson, MdRadio } from "react-icons/md";
+import { FaPlay, FaPause } from "react-icons/fa";
 import "../../css/sidemenu/SideMenu.css";
-import { CiUser } from "react-icons/ci";
-import { AiOutlineHome, AiOutlineSearch, AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { openAuthModal } from "../../redux/slices/uiSlice";
 
-const SideMenu = ({ setView, view, onOpenEditProfile }) => {
+const SideMenu = ({ setView, view, onOpenEditProfile, currentSong, isPlaying }) => {
   const dispatch = useDispatch();
-  const {user, isAuthenticated} = useSelector((state)=>state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
-  const displayUser ={
-    name: user?.name || "Alien",
-    avatar: user?.avatar || "",
-  }
-
-  const handleSearchClick =()=>{
-    if(!isAuthenticated){
+  const handleSearchClick = () => {
+    if (!isAuthenticated) {
       dispatch(openAuthModal("login"));
       return;
     }
     setView("Search");
   };
 
-  const handleFavouriteClick =()=>{
-    if(!isAuthenticated){
+  const handleFavouriteClick = () => {
+    if (!isAuthenticated) {
       dispatch(openAuthModal("login"));
       return;
     }
     setView("favourite");
   };
 
-
   const getNavBtnClass = (item) =>
     `sidemenu-nav-btn ${view === item ? "active" : ""}`;
+
   return (
-    <>
-      <aside className="sidemenu-root">
-        {/* Logo */}
-        <div className="sidemenu-header">
-          <img src={logo} alt="wsa-logo" className="sidemenu-logo-img" />
-          <h2 className="sidemenu-logo-title">Vibe It</h2>
-        </div>
-        {/* Navigation */}
-        <nav className="sidemenu-nav" aria-label="Main navigation">
-          <ul className="sidemenu-nav-list">
-            <li>
-              <button
-                className={getNavBtnClass("home")}
-                onClick={() => setView("home")}
-              >
-                <AiOutlineHome className="sidemenu-nav-icon" size={18} />
-                <span>Home</span>
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={handleSearchClick}
-                className={getNavBtnClass("search")}
-              >
-                <AiOutlineSearch className="sidemenu-nav-icon" size={18} />
-                <span> Search</span>
-              </button>
-            </li>
-            <li>
-              <button
-                className={getNavBtnClass("favourite")}
-                onClick={handleFavouriteClick}
-              >
-                <AiOutlineHeart size={18} />
-                <span>Favourite</span>
-              </button>
-            </li>
-          </ul>
+    <aside className="sidemenu-root">
+      {/* Menu Section */}
+      <div className="sidemenu-section">
+        <h3 className="sidemenu-section-title">MENU</h3>
+        <nav className="sidemenu-nav">
+          <button
+            className={getNavBtnClass("home")}
+            onClick={() => setView("home")}
+          >
+            <AiOutlineHome className="sidemenu-nav-icon" size={20} />
+            <span>Explore</span>
+          </button>
+          <button
+            className={getNavBtnClass("genres")}
+            onClick={() => setView("home")}
+          >
+            <MdLibraryMusic className="sidemenu-nav-icon" size={20} />
+            <span>Genres</span>
+          </button>
+          <button
+            className={getNavBtnClass("albums")}
+            onClick={() => setView("home")}
+          >
+            <MdAlbum className="sidemenu-nav-icon" size={20} />
+            <span>Albums</span>
+          </button>
+          <button
+            className={getNavBtnClass("artists")}
+            onClick={() => setView("home")}
+          >
+            <MdPerson className="sidemenu-nav-icon" size={20} />
+            <span>Artists</span>
+          </button>
+          <button
+            className={getNavBtnClass("radio")}
+            onClick={() => setView("home")}
+          >
+            <MdRadio className="sidemenu-nav-icon" size={20} />
+            <span>Radio</span>
+          </button>
         </nav>
+      </div>
 
-        <div className="flex-1"></div>
-        <div className="sidemenu-profile-row">
-          <div className="profile-placeholder">
-            <CiUser size={30} />
-          </div>
+      {/* Library Section */}
+      <div className="sidemenu-section">
+        <h3 className="sidemenu-section-title">LIBRARY</h3>
+        <nav className="sidemenu-nav">
+          <button
+            className={getNavBtnClass("recent")}
+            onClick={() => setView("home")}
+          >
+            <AiOutlineFolder className="sidemenu-nav-icon" size={20} />
+            <span>Recent</span>
+          </button>
+          <button
+            className={getNavBtnClass("myalbums")}
+            onClick={() => setView("home")}
+          >
+            <MdAlbum className="sidemenu-nav-icon" size={20} />
+            <span>Albums</span>
+          </button>
+          <button
+            className={getNavBtnClass("myartists")}
+            onClick={() => setView("home")}
+          >
+            <MdPerson className="sidemenu-nav-icon" size={20} />
+            <span>Artists</span>
+          </button>
+          <button
+            className={getNavBtnClass("local")}
+            onClick={() => setView("home")}
+          >
+            <AiOutlineFolder className="sidemenu-nav-icon" size={20} />
+            <span>Local</span>
+          </button>
+        </nav>
+      </div>
 
-          <div className="sidemenu-username-wrapper">
-            <div className="sidemenu-username">{displayUser.name}</div>
+      {/* Playlist Section */}
+      <div className="sidemenu-section">
+        <h3 className="sidemenu-section-title">PLAYLIST</h3>
+        <nav className="sidemenu-nav">
+          <button
+            className={getNavBtnClass("create")}
+            onClick={() => setView("home")}
+          >
+            <span className="create-icon">+</span>
+            <span>Create New</span>
+          </button>
+          <button
+            className={getNavBtnClass("design")}
+            onClick={() => setView("home")}
+          >
+            <span>Design Flow</span>
+          </button>
+          <button
+            className={getNavBtnClass("favourite")}
+            onClick={handleFavouriteClick}
+          >
+            <span>Favourites</span>
+          </button>
+          <button
+            className={getNavBtnClass("nightjams")}
+            onClick={() => setView("home")}
+          >
+            <span>Nighte Jams</span>
+          </button>
+        </nav>
+      </div>
+
+      <div className="flex-1"></div>
+
+      {/* Mini Player Card */}
+      {currentSong && (
+        <div className="sidemenu-mini-player">
+          <img
+            src={currentSong.image}
+            alt={currentSong.name}
+            className="mini-player-artwork"
+          />
+          <div className="mini-player-info">
+            <h4 className="mini-player-title">{currentSong.name}</h4>
+            <p className="mini-player-artist">Playing on Shuffle</p>
           </div>
-         {isAuthenticated && (
-           <div className="settings-container">
-            <button type="button" onClick={onOpenEditProfile} className="sidemenu-settings-btn">
-              <IoIosSettings size={20} />
-            </button>
+          <div className="mini-player-play-icon">
+            {isPlaying ? (
+              <FaPause size={12} />
+            ) : (
+              <FaPlay size={12} />
+            )}
           </div>
-         )}
         </div>
-      </aside>
-    </>
+      )}
+    </aside>
   );
 };
 

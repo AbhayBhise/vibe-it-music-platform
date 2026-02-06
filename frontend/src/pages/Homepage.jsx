@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 
-import Footer from "../components/layout/Footer";
+import TopNav from "../components/layout/TopNav";
 import SideMenu from "../components/layout/SideMenu";
 import MainArea from "../components/layout/MainArea";
+import RightPlayerPanel from "../components/layout/RightPlayerPanel";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 
 import "../css/pages/HomePage.css";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import useAudioPlayer from "../hooks/useAudioPlayer";
-import { current } from "@reduxjs/toolkit";
 import Modal from "../components/common/Modal";
 import EditProfile from "../components/auth/EditProfile";
 
@@ -25,7 +25,7 @@ const Homepage = () => {
   const normalizedView = (view || "").toLowerCase();
   const songsToDisplay = normalizedView === "search" ? searchSongs : songs;
 
-  const { audioRef, currentIndex, currentSong, currentTime, isPlaying, loopEnabled, duration, isMuted, shuffleEnabled, playbackSpeed, volume, playSongAtIndex, handleTogglePlay, handleNext, handlePrev, handleTimeUpdate, handleLoadedMetadata, handleEnded, handleToggleMute, handleToggleLoop, handleToggleShuffle, handleChangeSpeed, handleSeek, handleChangeVolume, } = useAudioPlayer(songsToDisplay);
+  const { audioRef, currentIndex, currentSong, currentTime, isPlaying, loopEnabled, duration, isMuted, shuffleEnabled, playbackSpeed, volume, playSongAtIndex, handleTogglePlay, handleNext, handlePrev, handleTimeUpdate, handleLoadedMetadata, handleEnded, handleToggleMute, handleToggleLoop, handleToggleShuffle, handleChangeSpeed, handleSeek, handleChangeVolume } = useAudioPlayer(songsToDisplay);
 
   const playerState = {
     currentSong, isPlaying, currentTime, duration, isMuted, loopEnabled, shuffleEnabled, playbackSpeed, volume
@@ -63,8 +63,7 @@ const Homepage = () => {
       }
     };
     fetchInitialSongs();
-  },[]);
-
+  }, []);
 
   const loadPlaylist = async (tag) => {
     if (!tag) {
@@ -76,7 +75,6 @@ const Homepage = () => {
       const res = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/songs/playlistByTag/${tag}`
       );
-
       setSongs(res.data.results || []);
     } catch (error) {
       console.error("Failed to load playlist. ", error);
@@ -86,7 +84,6 @@ const Homepage = () => {
     }
   };
 
-  // When user clicks on a song in a table
   const handleSelectSong = (index) => {
     playSongAtIndex(index);
   }
@@ -94,7 +91,6 @@ const Homepage = () => {
   const handlePlayFavourite = (songs) => {
     const favourites = auth.user?.favourites || [];
     if (!favourites.length) return;
-
     const index = auth.user.favourites.findIndex((fav) => fav.id === songs.id);
     setSongs(auth.user.favourites);
     setView("home");
@@ -105,49 +101,73 @@ const Homepage = () => {
     }, 0);
   };
 
+  const handleSearch = (query) => {
+    if (query && query.trim()) {
+      setView("search");
+    }
+  };
+
   return (
     <>
       {isSongsLoading && !authModalOpen && <LoadingOverlay isVisible={isSongsLoading} />}
       <div className="homepage-root">
-      <audio ref={audioRef}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={handleEnded}>
-        {currentSong &&
-          <source
-            src={currentSong.audio}
-            type="audio/mpeg" />}
-      </audio>
+        <audio ref={audioRef}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+          onEnded={handleEnded}>
+          {currentSong &&
+            <source
+              src={currentSong.audio}
+              type="audio/mpeg" />}
+        </audio>
 
-      <div className="homepage-main-wrapper">
-        {/* Sidebar */}
-        <div className="homepage-sidebar">
-          <SideMenu setView={setView} view={normalizedView} onOpenEditProfile={()=> setOpenEditProfile(true)} />
-        </div> 
-        {/* Main Content */}
-        <div className="homepage-content">
-          <MainArea
-            view={normalizedView}
-            currentIndex={currentIndex}
-            onSelectSong={handleSelectSong}
-            onSelectFavourite={handlePlayFavourite}
-            onSelectTag={loadPlaylist}
-            songsToDisplay={songsToDisplay}
-            setSearchSongs={setSearchSongs}
-            isSongsLoading={isSongsLoading}
+        {/* Top Navigation */}
+        <TopNav
+          user={auth.user}
+          onSearch={handleSearch}
+          activeTab="music"
+        />
 
+        <div className="homepage-main-wrapper">
+          {/* Left Sidebar */}
+          <div className="homepage-sidebar">
+            <SideMenu
+              setView={setView}
+              view={normalizedView}
+              onOpenEditProfile={() => setOpenEditProfile(true)}
+              currentSong={currentSong}
+              isPlaying={isPlaying}
+            />
+          </div>
+
+          {/* Main Content */}
+          <div className="homepage-content">
+            <MainArea
+              view={normalizedView}
+              currentIndex={currentIndex}
+              onSelectSong={handleSelectSong}
+              onSelectFavourite={handlePlayFavourite}
+              onSelectTag={loadPlaylist}
+              songsToDisplay={songsToDisplay}
+              setSearchSongs={setSearchSongs}
+              isSongsLoading={isSongsLoading}
+            />
+          </div>
+
+          {/* Right Player Panel */}
+          <RightPlayerPanel
+            playerState={playerState}
+            playerControls={playerControls}
+            playerFeatures={playerFeatures}
           />
         </div>
-      </div>
-      {/* Footer Player */}
-      <Footer playerState={playerState} playerControls={playerControls} playerFeatures={playerFeatures} />
 
-      {openEditProfile && (
-        <Modal onClose={()=> setOpenEditProfile(false)}>
-          <EditProfile onClose={()=> setOpenEditProfile(false)} />
-        </Modal>
-      )}  
-    </div>
+        {openEditProfile && (
+          <Modal onClose={() => setOpenEditProfile(false)}>
+            <EditProfile onClose={() => setOpenEditProfile(false)} />
+          </Modal>
+        )}
+      </div>
     </>
   );
 };

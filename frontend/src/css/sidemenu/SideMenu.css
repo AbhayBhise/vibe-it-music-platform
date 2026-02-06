@@ -1,255 +1,174 @@
 .sidemenu-root {
-  @apply w-[280px] p-4 box-border flex flex-col h-full text-white bg-transparent gap-6;
+  @apply flex flex-col h-full;
+  padding: 24px 16px;
+  gap: 24px;
 }
 
-.sidemenu-header {
-  @apply flex items-center gap-3 px-2 py-4;
-  animation: slideInLeft 0.6s ease-out;
+.flex-1 {
+  flex: 1;
+  min-height: 0;
 }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+/* Section */
+.sidemenu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.sidemenu-logo-img {
-  @apply w-11 h-11 rounded-xl object-cover;
-  background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.3),
-      rgba(236, 72, 153, 0.3));
-  border: 2px solid rgba(168, 85, 247, 0.3);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
-  transition: all 0.3s ease;
+.sidemenu-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+  margin: 0;
+  padding: 0 12px;
+  text-transform: uppercase;
 }
 
-.sidemenu-logo-img:hover {
-  transform: scale(1.05) rotate(2deg);
-  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
-  border-color: rgba(168, 85, 247, 0.5);
-}
-
-.sidemenu-logo-title {
-  @apply m-0 text-xl font-bold;
-  background: linear-gradient(135deg, #a855f7, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 0.5px;
-}
-
+/* Navigation */
 .sidemenu-nav {
-  @apply flex-1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.sidemenu-nav-list {
-  @apply list-none p-0 flex flex-col gap-2;
-  animation: fadeInUp 0.6s ease-out 0.2s both;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* NAV BUTTON (base) */
 .sidemenu-nav-btn {
-  @apply flex items-center gap-4 bg-transparent border-none p-3.5 px-4 cursor-pointer text-gray-300 text-left w-full rounded-xl transition-all duration-300 text-[15px] font-medium relative overflow-hidden focus:outline-none;
-}
-
-/* Hover glow effect background */
-.sidemenu-nav-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.1),
-      rgba(236, 72, 153, 0.1));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 0.75rem;
-}
-
-.sidemenu-nav-btn:hover::before {
-  opacity: 1;
+  @apply flex items-center gap-3;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  position: relative;
 }
 
 .sidemenu-nav-btn:hover {
-  @apply text-white transform translate-x-1;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sidemenu-nav-btn.active {
+  background: linear-gradient(90deg, rgba(91, 127, 255, 0.2), rgba(168, 85, 247, 0.1));
+  color: #ffffff;
+  border-left: 3px solid #5B7FFF;
+  box-shadow: 0 0 20px rgba(91, 127, 255, 0.2);
 }
 
 .sidemenu-nav-icon {
-  @apply relative z-10;
-  transition: transform 0.3s ease;
   opacity: 0.7;
+  flex-shrink: 0;
 }
 
-.sidemenu-nav-btn:hover .sidemenu-nav-icon {
-  transform: scale(1.1);
+.sidemenu-nav-btn:hover .sidemenu-nav-icon,
+.sidemenu-nav-btn.active .sidemenu-nav-icon {
   opacity: 1;
 }
 
-.sidemenu-nav-btn span {
-  @apply relative z-10;
+.create-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  font-weight: 300;
+  opacity: 0.7;
 }
 
-/* ACTIVE STATE */
-.sidemenu-nav-btn.active {
-  background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.3),
-      rgba(236, 72, 153, 0.3));
-  border: 1px solid rgba(168, 85, 247, 0.6);
-  @apply text-white shadow-lg;
-  box-shadow: 0 6px 25px rgba(168, 85, 247, 0.4),
-    0 0 50px rgba(168, 85, 247, 0.15) inset;
-  transform: translateX(3px);
-}
-
-.sidemenu-nav-btn.active::before {
-  opacity: 0;
-}
-
-.sidemenu-nav-btn.active .sidemenu-nav-icon {
-  color: #a855f7;
-  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
-}
-
-/* PROFILE SECTION */
-.sidemenu-profile-row {
-  @apply flex items-center gap-3 p-3 rounded-xl;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  animation: fadeIn 0.6s ease-out 0.4s both;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.sidemenu-profile-row:hover {
+/* Mini Player Card */
+.sidemenu-mini-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(168, 85, 247, 0.3);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.1);
-}
-
-.sidemenu-avatar-img {
-  @apply w-12 h-12 rounded-xl object-cover;
-  border: 2px solid rgba(168, 85, 247, 0.3);
-  box-shadow: 0 2px 10px rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.sidemenu-avatar-img:hover {
-  transform: scale(1.05);
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+.sidemenu-mini-player:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(91, 127, 255, 0.3);
 }
 
-.profile-placeholder {
-  @apply w-12 h-12 rounded-xl flex items-center justify-center;
-  background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.2),
-      rgba(236, 72, 153, 0.2));
-  border: 2px solid rgba(168, 85, 247, 0.3);
-  color: rgba(168, 85, 247, 0.8);
-  transition: all 0.3s ease;
+.mini-player-artwork {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-.profile-placeholder:hover {
-  background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.3),
-      rgba(236, 72, 153, 0.3));
-  border-color: rgba(168, 85, 247, 0.5);
-  transform: scale(1.05);
+.mini-player-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.sidemenu-username-wrapper {
-  @apply flex-1;
+.mini-player-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.sidemenu-username {
-  @apply text-sm font-semibold text-white overflow-hidden text-ellipsis whitespace-nowrap;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+.mini-player-artist {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.settings-container {
-  @apply flex items-center;
+.mini-player-play-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(91, 127, 255, 0.2);
+  border-radius: 6px;
+  color: #5B7FFF;
+  flex-shrink: 0;
 }
 
-.sidemenu-settings-btn {
-  @apply bg-transparent border-none cursor-pointer p-2 text-gray-400 rounded-lg transition-all duration-300;
-  position: relative;
-  z-index: 1;
-}
-
-.sidemenu-settings-btn:hover {
-  @apply text-white bg-white/10;
-  box-shadow: 0 2px 10px rgba(168, 85, 247, 0.2);
-}
-
-.sidemenu-settings-btn svg {
-  transition: transform 0.3s ease;
-  display: block;
-}
-
-.sidemenu-settings-btn:hover svg {
-  transform: rotate(90deg);
-}
-
-.sidemenu-settings-btn:active {
-  transform: scale(0.95);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Responsive */
+@media (max-width: 968px) {
   .sidemenu-root {
-    @apply w-[70px] p-2 gap-4;
-  }
-
-  .sidemenu-header {
-    @apply flex-col gap-2 px-0;
-  }
-
-  .sidemenu-logo-title {
-    @apply hidden;
+    padding: 16px 8px;
   }
 
   .sidemenu-nav-btn span {
-    @apply hidden;
+    display: none;
   }
 
-  .sidemenu-nav-btn {
-    @apply justify-center p-3;
+  .sidemenu-section-title {
+    display: none;
   }
 
-  .sidemenu-username {
-    @apply hidden;
+  .sidemenu-mini-player {
+    flex-direction: column;
+    padding: 8px;
   }
 
-  .sidemenu-profile-row {
-    @apply flex-col p-2 gap-2;
+  .mini-player-info {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidemenu-root {
+    display: none;
   }
 }
