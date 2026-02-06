@@ -160,7 +160,7 @@
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    justify-center;
+    justify-content: center;
 }
 
 .player-control-btn:hover {
