@@ -4,7 +4,15 @@
 
 /* This is the ONLY scrolling container */
 .mainarea-scroll {
-  @apply flex-1 min-h-0 overflow-hidden;
+  @apply flex-1 min-h-0 overflow-y-auto;
+}
+
+.mainarea-scroll {
+  scrollbar-width: none;
+}
+
+.mainarea-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .mainarea-loading {

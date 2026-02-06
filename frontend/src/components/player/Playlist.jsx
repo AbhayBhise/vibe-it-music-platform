@@ -4,6 +4,12 @@ import "../../css/mainArea/Playlist.css";
 const Playlist = ({onSelectTag}) => {
   const items = [
     {
+      id: 0,
+      label: "Trending",
+      tag: "trending",
+      img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+    },
+    {
       id: 1,
       label: "Workout",
       tag: "workout",
@@ -44,7 +50,7 @@ const Playlist = ({onSelectTag}) => {
       <div className="playlist-wrapper">
         <div className="playlist-grid">
           {items.map((item) => (
-            <div className="playlist-card" key={item.id} onClick={()=> onSelectTag(item.tag)} >
+            <div className="playlist-card" key={item.id} onClick={() => onSelectTag(item.tag)}>
               <img src={item.img} alt={item.label} className="playlist-image" />
               <h4 className="playlist-label">{item.label}</h4>
             </div>
