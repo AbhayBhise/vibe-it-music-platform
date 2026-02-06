@@ -8,6 +8,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -21,8 +22,7 @@
 
 /* Icon buttons (prev, next, like) */
 .control-icon-btn {
-  @apply bg-transparent border-none cursor-pointer p-2.5 inline-flex items-center justify-center 
-         rounded-full transition-all duration-300;
+  @apply bg-transparent border-none cursor-pointer p-2.5 inline-flex items-center justify-center rounded-full transition-all duration-300;
   position: relative;
 }
 
@@ -31,11 +31,9 @@
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.2),
-    rgba(236, 72, 153, 0.2)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.2),
+      rgba(236, 72, 153, 0.2));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -67,8 +65,7 @@
 
 /* Play/Pause button (larger) */
 .control-play-btn {
-  @apply bg-transparent border-none cursor-pointer p-2 inline-flex items-center justify-center 
-         rounded-full transition-all duration-300;
+  @apply bg-transparent border-none cursor-pointer p-2 inline-flex items-center justify-center rounded-full transition-all duration-300;
   position: relative;
 }
 
@@ -77,11 +74,9 @@
   position: absolute;
   inset: -4px;
   border-radius: 9999px;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.3),
-    rgba(236, 72, 153, 0.3)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.3),
+      rgba(236, 72, 153, 0.3));
   opacity: 0;
   transition: all 0.3s ease;
   filter: blur(8px);
@@ -93,20 +88,22 @@
 }
 
 @keyframes pulseGlow {
+
   0%,
   100% {
-    opacity: 0.5;
+    opacity: 0.6;
     transform: scale(1);
   }
+
   50% {
     opacity: 1;
-    transform: scale(1.1);
+    transform: scale(1.2);
   }
 }
 
 .control-play-btn:hover {
-  transform: scale(1.15);
-  background: rgba(255, 255, 255, 0.05);
+  transform: scale(1.2);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .control-play-btn:active {
@@ -128,13 +125,14 @@
 .control-progress {
   -webkit-appearance: none;
   appearance: none;
-  @apply w-full h-1.5 rounded-full cursor-pointer outline-none;
+  @apply w-full rounded-full cursor-pointer outline-none;
+  height: 6px;
   background: #333333;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .control-progress:hover {
-  height: 6px;
+  height: 8px;
 }
 
 .control-progress::-webkit-slider-thumb {
