@@ -20,7 +20,7 @@ function audioReducer(state, action) {
         case "LOADING":
             return { ...state, isLoading: true };
 
-            break;
+            
 
         case "PLAY":
             return { ...state, isPlaying: true, isLoading: false };
@@ -63,7 +63,7 @@ function audioReducer(state, action) {
             break;
     }
 }
-const useAudioPlayer = (songs) => {
+const useAudioPlayer = (songs = []) => {
     const [audioState, dispatch] = useReducer(audioReducer, initialAudioState);
 
     const [duration, setDuration] = useState(0);
