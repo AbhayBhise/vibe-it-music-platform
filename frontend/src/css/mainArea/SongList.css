@@ -148,3 +148,42 @@
   @apply text-sm;
   color: rgba(156, 163, 175, 0.9);
 }
+
+/* ===============================
+   Skeleton Loading
+================================ */
+.songlist-skeleton-row {
+  cursor: default;
+}
+
+.songlist-skeleton-bar {
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06) 25%,
+    rgba(168, 85, 247, 0.22) 45%,
+    rgba(255, 255, 255, 0.06) 65%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skel-xs {
+  width: 40px;
+}
+.skel-sm {
+  width: 80px;
+}
+.skel-md {
+  width: 160px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

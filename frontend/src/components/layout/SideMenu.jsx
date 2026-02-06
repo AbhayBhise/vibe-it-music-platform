@@ -42,7 +42,7 @@ const SideMenu = ({ setView, view, onOpenEditProfile }) => {
         {/* Logo */}
         <div className="sidemenu-header">
           <img src={logo} alt="wsa-logo" className="sidemenu-logo-img" />
-          <h2 className="sidemenu-logo-title">Synthesia</h2>
+          <h2 className="sidemenu-logo-title">Vibe It</h2>
         </div>
         {/* Navigation */}
         <nav className="sidemenu-nav" aria-label="Main navigation">

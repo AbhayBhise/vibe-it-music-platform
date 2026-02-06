@@ -15,12 +15,13 @@ const MainArea = ({ view,
   onSelectFavourite,
   onSelectTag,
   songsToDisplay,
-  setSearchSongs, }) => {
+  setSearchSongs,
+  isSongsLoading, }) => {
   const auth = useSelector((state) => state.auth);
 
 
   return (
-    <div className="mainarea-root">
+    <div className={`mainarea-root ${isSongsLoading ? "mainarea-loading" : "mainarea-loaded"}`}>
       <div className="mainarea-top">
         <Auth />
         {view === "home" && <Playlist onSelectTag={onSelectTag} />}
@@ -28,7 +29,14 @@ const MainArea = ({ view,
       </div>
 
       <div className="mainarea-scroll">
-        {(view === "home" || view === "search") && <SongList songs={songsToDisplay} onSelectSong={onSelectSong} currentIndex={currentIndex} />}
+        {(view === "home" || view === "search") && (
+          <SongList
+            songs={songsToDisplay}
+            onSelectSong={onSelectSong}
+            currentIndex={currentIndex}
+            isLoading={isSongsLoading}
+          />
+        )}
 
         {view === "favourite" && (<SongGrid songs={auth.user?.favourites || []} onSelectFavourite={onSelectFavourite} />)}
       </div>

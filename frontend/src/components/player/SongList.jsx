@@ -1,7 +1,56 @@
 import "../../css/mainArea/SongList.css";
 import { formatTime } from "../utils/helper";
 
-const SongList = ({ songs,onSelectSong, currentIndex }) => {
+const SongList = ({ songs, onSelectSong, currentIndex, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className="songlist-root">
+        <div className="songlist-scroll">
+          <table className="songlist-table">
+            <colgroup>
+              <col className="col-index" />
+              <col className="col-name" />
+              <col className="col-artist" />
+              <col className="col-year" />
+              <col className="col-duration" />
+            </colgroup>
+
+            <thead>
+              <tr>
+                <th className="songlist-th th-index">No</th>
+                <th className="songlist-th">Name</th>
+                <th className="songlist-th">Artist</th>
+                <th className="songlist-th">Year</th>
+                <th className="songlist-th th-duration">Duration</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <tr key={index} className="songlist-row songlist-skeleton-row">
+                  <td className="songlist-td td-index">
+                    <div className="songlist-skeleton-bar skel-xs" />
+                  </td>
+                  <td className="songlist-td">
+                    <div className="songlist-skeleton-bar skel-md" />
+                  </td>
+                  <td className="songlist-td">
+                    <div className="songlist-skeleton-bar skel-sm" />
+                  </td>
+                  <td className="songlist-td">
+                    <div className="songlist-skeleton-bar skel-xs" />
+                  </td>
+                  <td className="songlist-td td-duration">
+                    <div className="songlist-skeleton-bar skel-xs" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
   if (!songs || songs.length === 0) {
     return (
       <div className="songlist-root">

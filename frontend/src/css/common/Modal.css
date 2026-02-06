@@ -4,13 +4,14 @@
   position: fixed;
   inset: 0; /* top/right/bottom/left 0 */
   background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999; /* above everything */
+  z-index: 11000; /* above overlay */
 }
 
 .modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: #0b0b0b; /* dark card */
   color: #fff;
   border-radius: 8px;
@@ -29,7 +30,13 @@
   border: none;
   color: #fff;
   cursor: pointer;
-  font-size: 18px;
+  padding: 4px;
+}
+
+.modal-close-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 /* small header text */

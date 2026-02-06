@@ -3,6 +3,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import Footer from "../components/layout/Footer";
 import SideMenu from "../components/layout/SideMenu";
 import MainArea from "../components/layout/MainArea";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
 
 import "../css/pages/HomePage.css";
 import { useSelector } from "react-redux";
@@ -17,9 +18,12 @@ const Homepage = () => {
   const [songs, setSongs] = useState([]);
   const [searchSongs, setSearchSongs] = useState([]);
   const [openEditProfile, setOpenEditProfile] = useState(false);
+  const [isSongsLoading, setIsSongsLoading] = useState(true);
   const auth = useSelector((state) => state.auth);
+  const { authModalOpen } = useSelector((state) => state.ui);
 
-  const songsToDisplay = view === "search" ? searchSongs : songs;
+  const normalizedView = (view || "").toLowerCase();
+  const songsToDisplay = normalizedView === "search" ? searchSongs : songs;
 
   const { audioRef, currentIndex, currentSong, currentTime, isPlaying, loopEnabled, duration, isMuted, shuffleEnabled, playbackSpeed, volume, playSongAtIndex, handleTogglePlay, handleNext, handlePrev, handleTimeUpdate, handleLoadedMetadata, handleEnded, handleToggleMute, handleToggleLoop, handleToggleShuffle, handleChangeSpeed, handleSeek, handleChangeVolume, } = useAudioPlayer(songsToDisplay);
 
@@ -46,6 +50,7 @@ const Homepage = () => {
   useEffect(() => {
     const fetchInitialSongs = async () => {
       try {
+        setIsSongsLoading(true);
         const res = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/api/songs`,
         );
@@ -53,6 +58,8 @@ const Homepage = () => {
       } catch (error) {
         console.error("Error while fetching the songs", error);
         setSongs([]);
+      } finally {
+        setIsSongsLoading(false);
       }
     };
     fetchInitialSongs();
@@ -65,6 +72,7 @@ const Homepage = () => {
       return;
     }
     try {
+      setIsSongsLoading(true);
       const res = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/songs/playlistByTag/${tag}`
       );
@@ -73,6 +81,8 @@ const Homepage = () => {
     } catch (error) {
       console.error("Failed to load playlist. ", error);
       setSongs([]);
+    } finally {
+      setIsSongsLoading(false);
     }
   };
 
@@ -96,7 +106,9 @@ const Homepage = () => {
   };
 
   return (
-    <div className="homepage-root">
+    <>
+      {isSongsLoading && !authModalOpen && <LoadingOverlay isVisible={isSongsLoading} />}
+      <div className="homepage-root">
       <audio ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
@@ -110,18 +122,19 @@ const Homepage = () => {
       <div className="homepage-main-wrapper">
         {/* Sidebar */}
         <div className="homepage-sidebar">
-          <SideMenu setView={setView} view={view} onOpenEditProfile={()=> setOpenEditProfile(true)} />
+          <SideMenu setView={setView} view={normalizedView} onOpenEditProfile={()=> setOpenEditProfile(true)} />
         </div> 
         {/* Main Content */}
         <div className="homepage-content">
           <MainArea
-            view={view}
+            view={normalizedView}
             currentIndex={currentIndex}
             onSelectSong={handleSelectSong}
             onSelectFavourite={handlePlayFavourite}
             onSelectTag={loadPlaylist}
             songsToDisplay={songsToDisplay}
             setSearchSongs={setSearchSongs}
+            isSongsLoading={isSongsLoading}
 
           />
         </div>
@@ -135,6 +148,7 @@ const Homepage = () => {
         </Modal>
       )}  
     </div>
+    </>
   );
 };
 

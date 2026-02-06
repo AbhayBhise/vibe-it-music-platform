@@ -6,3 +6,22 @@
 .mainarea-scroll {
   @apply flex-1 min-h-0 overflow-hidden;
 }
+
+.mainarea-loading {
+  opacity: 0.6;
+}
+
+.mainarea-loaded {
+  animation: mainFadeIn 420ms ease both;
+}
+
+@keyframes mainFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
