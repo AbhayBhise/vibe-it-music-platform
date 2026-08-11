@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState, useCallback, useEffect } from "react";
+import { useReducer, useRef, useState, useCallback } from "react";
 
 const initialAudioState = {
     isPlaying: false,
@@ -48,6 +48,25 @@ const useAudioPlayer = (songs = []) => {
     const previousVolumeRef = useRef(1);
     const audioRef = useRef(null);
     const playPromiseRef = useRef(null);
+
+    const handleTogglePlay = useCallback(async () => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        try {
+            if (audio.paused) {
+                if (playPromiseRef.current) await playPromiseRef.current;
+                playPromiseRef.current = audio.play();
+                await playPromiseRef.current;
+                dispatch({ type: "PLAY" });
+            } else {
+                audio.pause();
+                dispatch({ type: "PAUSE" });
+            }
+        } catch (error) {
+            console.error("Toggle Play Error:", error);
+        }
+    }, []);
 
     // Play a song at specific index value
     const playSongAtIndex = useCallback(async (index) => {
@@ -102,26 +121,7 @@ const useAudioPlayer = (songs = []) => {
                 dispatch({ type: "PAUSE" });
             }
         }
-    }, [songs, audioState.playbackSpeed, audioState.volume]);
-
-    const handleTogglePlay = useCallback(async () => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        try {
-            if (audio.paused) {
-                if (playPromiseRef.current) await playPromiseRef.current;
-                playPromiseRef.current = audio.play();
-                await playPromiseRef.current;
-                dispatch({ type: "PLAY" });
-            } else {
-                audio.pause();
-                dispatch({ type: "PAUSE" });
-            }
-        } catch (error) {
-            console.error("Toggle Play Error:", error);
-        }
-    }, []);
+    }, [songs, audioState.playbackSpeed, audioState.volume, audioState.currentSong, handleTogglePlay]);
 
     const handleNext = useCallback(() => {
         if (!songs.length) return;
@@ -179,7 +179,7 @@ const useAudioPlayer = (songs = []) => {
             // But playSongAtIndex calls .play() directly, so this might be redundant or for safety.
             // We'll leave it to playSongAtIndex to drive playback.
         }
-    }, [audioState.playbackSpeed, audioState.volume, audioState.isMuted, audioState.currentSong]);
+    }, [audioState.playbackSpeed, audioState.volume, audioState.isMuted, audioState.currentSong, audioState.isPlaying]);
 
     const handleEnded = useCallback(() => {
         const audio = audioRef.current;
