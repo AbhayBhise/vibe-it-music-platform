@@ -7,8 +7,8 @@ import validator from 'validator'
 import axios from 'axios'
 import { setUser } from "../../redux/slices/authSlice";
 import { closeAuthModal, switchAuthMode } from '../../redux/slices/uiSlice';
+import toast from 'react-hot-toast';
 import '../../css/auth/Login.css'
-// import '../../css/auth/Login.css'
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -32,10 +32,12 @@ const Login = () => {
 
         if (!validator.isEmail(email)) {
             //proceed
+            toast.error("Please enter a valid email address");
             dispatch(setError("Please enter a valid email address"));
             return;
         }
         if (!password) {
+            toast.error("Please enter your password");
             dispatch(setError("Please enter your password"));
             return;
         }
@@ -62,9 +64,11 @@ const Login = () => {
 
             localStorage.setItem("token", data.token);
             dispatch(closeAuthModal());
+            toast.success("Login Successful!");
             console.log("Login Successful!");
         } catch (error) {
             const serverMessage = error?.response?.data?.message || error?.response?.data?.error;
+            toast.error(serverMessage || "Login failed. Please try again later.");
             dispatch(setError(serverMessage || "Login failed. Please try again later."));
 
         }
@@ -88,8 +92,10 @@ const Login = () => {
                     email: forgotEmail,
                 }
             );
+            toast.success("Password reset link sent! Please check your email 📩 inbox.");
             setForgotMsg("Password reset link sent! Please check your email 📩 inbox.");
         } catch (error) {
+            toast.error(error?.response?.data?.message || "Failed to send password reset link.");
             setForgotMsg(error?.response?.data?.message || "Failed to send password reset link. Please try again later.");
         }
 

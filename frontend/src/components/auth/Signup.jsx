@@ -6,6 +6,7 @@ import { clearError, setError, setLoading, setUser } from '../../redux/slices/au
 import {CiUser} from 'react-icons/ci'
 import '../../css/auth/Signup.css'
 import { switchAuthMode,closeAuthModal } from '../../redux/slices/uiSlice'
+import toast from 'react-hot-toast';
 const Signup = () => {
   const dispatch = useDispatch();
   const { isLoading, error } = useSelector((state) => state.auth)
@@ -40,6 +41,7 @@ const Signup = () => {
     // Signup logic here
     dispatch(clearError());
     if(!fullName || !email || !password){
+      toast.error("All fields are required.");
       dispatch(setError("All fields are required."));
       return;
     };
@@ -59,9 +61,11 @@ const Signup = () => {
       }));
       localStorage.setItem("token", data.token);
       dispatch(closeAuthModal());
+      toast.success("Signup Successful!");
       console.log("Signup Successful!");
     } catch (error) {
       const serverMessage = error?.response?.data?.message || error?.response?.data?.error;
+      toast.error(serverMessage || "Signup failed. Please try again.");
       dispatch(setError(serverMessage || "Signup failed. Please try again."));
     }
   } 
