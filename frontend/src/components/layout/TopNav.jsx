@@ -29,8 +29,8 @@ const TopNav = ({ user, onSearch, activeTab = "music", onOpenEditProfile }) => {
     <nav className="topnav-root">
       {/* Left: Logo */}
       <div className="topnav-left">
-        <img src={logo} alt="Groovy" className="topnav-logo" />
-        <h1 className="topnav-brand">Groovy</h1>
+        <img src={logo} alt="Vibe It" className="topnav-logo" />
+        <h1 className="topnav-brand">Vibe It</h1>
       </div>
 
       {/* Center-Left: Tabs */}
