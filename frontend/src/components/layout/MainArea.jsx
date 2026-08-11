@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 
 import Auth from "../auth/Auth";
-import SearchBar from "../search/SearchBar";
 import SongGrid from "../songs/SongGrid";
 import HeroSection from "../home/HeroSection";
 import TopArtists from "../home/TopArtists";
 import GenreGrid from "../home/GenreGrid";
 import TopCharts from "../home/TopCharts";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaHeart } from "react-icons/fa";
 
 import "../../css/mainArea/MainArea.css";
 import { useSelector } from "react-redux";
@@ -23,7 +22,7 @@ const MainArea = ({
   onSelectFavourite,
   onSelectTag,
   songsToDisplay,
-  setSearchSongs,
+  searchQuery,
   isSongsLoading,
   onBackToHome
 }) => {
@@ -114,13 +113,19 @@ const MainArea = ({
               <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
               <h2>Top Charts</h2>
             </div>
-            <TopCharts
-              songs={songsToDisplay}
-              onSelectSong={onSelectSong}
-              currentIndex={currentIndex}
-              currentSong={currentSong}
-              isPlaying={isPlaying}
-            />
+            {songsToDisplay && songsToDisplay.length > 0 ? (
+              <TopCharts
+                songs={songsToDisplay}
+                onSelectSong={onSelectSong}
+                currentIndex={currentIndex}
+                currentSong={currentSong}
+                isPlaying={isPlaying}
+              />
+            ) : (
+              <div className="empty-state">
+                <p>No songs found.</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -130,7 +135,13 @@ const MainArea = ({
               <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
               <h2>All Artists</h2>
             </div>
-            <TopArtists artists={dynamicArtists} onSelectArtist={onSelectArtist} />
+            {dynamicArtists && dynamicArtists.length > 0 ? (
+              <TopArtists artists={dynamicArtists} onSelectArtist={onSelectArtist} />
+            ) : (
+              <div className="empty-state">
+                <p>No artists found.</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -146,20 +157,40 @@ const MainArea = ({
 
         {view === "search" && (
           <>
-            <SearchBar setSearchSongs={setSearchSongs} />
-            <div className="search-results-title">Search Results</div>
-            <TopCharts
-              songs={songsToDisplay}
-              onSelectSong={onSelectSong}
-              currentIndex={currentIndex}
-              currentSong={currentSong}
-              isPlaying={isPlaying}
-            />
+            <div className="search-results-title">
+              Search Results for "{searchQuery}"
+            </div>
+            {songsToDisplay && songsToDisplay.length > 0 ? (
+              <TopCharts
+                songs={songsToDisplay}
+                onSelectSong={onSelectSong}
+                currentIndex={currentIndex}
+                currentSong={currentSong}
+                isPlaying={isPlaying}
+              />
+            ) : (
+              <div className="empty-state" style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af' }}>
+                <p>No songs found for "{searchQuery}". Try a different search!</p>
+              </div>
+            )}
           </>
         )}
 
         {view === "favourite" && (
-          <SongGrid songs={auth.user?.favourites || []} onSelectFavourite={onSelectFavourite} />
+          <>
+            <div className="expanded-header">
+              <h2>Your Favourites</h2>
+            </div>
+            {auth.user?.favourites && auth.user.favourites.length > 0 ? (
+              <SongGrid songs={auth.user.favourites} onSelectFavourite={onSelectFavourite} />
+            ) : (
+              <div className="empty-state" style={{ padding: '4rem 2rem', textAlign: 'center', color: '#9ca3af' }}>
+                <FaHeart size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
+                <h3>No favourite songs yet!</h3>
+                <p>Click the heart icon on any playing song to add it to your favourites.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

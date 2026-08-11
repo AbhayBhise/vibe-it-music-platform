@@ -25,6 +25,7 @@ const Homepage = () => {
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openCreatePlaylist, setOpenCreatePlaylist] = useState(false);
   const [isSongsLoading, setIsSongsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const auth = useSelector((state) => state.auth);
   const { authModalOpen } = useSelector((state) => state.ui);
 
@@ -94,6 +95,26 @@ const Homepage = () => {
     fetchAllSongs();
   }, []);
 
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchSongs([]);
+      return;
+    }
+    const fetchSearch = async () => {
+      try {
+        setIsSongsLoading(true);
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/songs/search/${encodeURIComponent(searchQuery)}`);
+        setSearchSongs(res.data.results || []);
+      } catch (error) {
+        console.error("Search failed:", error);
+      } finally {
+        setIsSongsLoading(false);
+      }
+    };
+    const debounce = setTimeout(fetchSearch, 500);
+    return () => clearTimeout(debounce);
+  }, [searchQuery]);
+
   const loadPlaylist = async (tag) => {
     if (!tag) {
       console.warn("No tag is provided!")
@@ -151,9 +172,13 @@ const Homepage = () => {
   };
 
   const handleSearch = (query) => {
+    setSearchQuery(query);
     if (query && query.trim()) {
       setView("search");
       setActiveMenu("search");
+    } else {
+      setView("home");
+      setActiveMenu("home");
     }
   };
 
@@ -229,7 +254,7 @@ const Homepage = () => {
               onSelectFavourite={handlePlayFavourite}
               onSelectTag={loadPlaylist}
               songsToDisplay={songsToDisplay}
-              setSearchSongs={setSearchSongs}
+              searchQuery={searchQuery}
               isSongsLoading={isSongsLoading}
               onBackToHome={() => setView("home")}
             />
