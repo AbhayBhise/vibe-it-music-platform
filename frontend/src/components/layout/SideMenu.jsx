@@ -9,6 +9,7 @@ import { FaPlay, FaPause } from "react-icons/fa";
 import "../../css/sidemenu/SideMenu.css";
 import { useDispatch, useSelector } from "react-redux";
 import { openAuthModal } from "../../redux/slices/uiSlice";
+import toast from 'react-hot-toast';
 
 const SideMenu = ({
   setView,
@@ -125,7 +126,7 @@ const SideMenu = ({
           </button>
           <button
             className={getNavBtnClass("local")}
-            onClick={() => { setView("home"); setActiveMenu("local"); }}
+            onClick={() => { toast("Local file playback coming soon!", { icon: "🚧" }); }}
           >
             <AiOutlineFolder className="sidemenu-nav-icon" size={20} />
             <span>Local</span>

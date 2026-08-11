@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Auth from "../auth/Auth";
 import SearchBar from "../search/SearchBar";
@@ -14,10 +14,12 @@ import { useSelector } from "react-redux";
 
 const MainArea = ({
   view,
+  activeMenu,
   currentIndex,
   currentSong,
   isPlaying,
   onSelectSong,
+  onSelectArtist,
   onSelectFavourite,
   onSelectTag,
   songsToDisplay,
@@ -27,6 +29,13 @@ const MainArea = ({
 }) => {
   const auth = useSelector((state) => state.auth);
   const [internalView, setInternalView] = useState("default");
+
+  useEffect(() => {
+    if (activeMenu === "myalbums") setInternalView("see_all_genres");
+    else if (activeMenu === "myartists") setInternalView("see_all_artists");
+    else if (activeMenu === "recent" || activeMenu?.startsWith("artist-") || activeMenu?.startsWith("playlist-")) setInternalView("see_all_charts");
+    else setInternalView("default");
+  }, [activeMenu]);
 
   const featuredSong = songsToDisplay && songsToDisplay.length > 0 ? songsToDisplay[0] : null;
 
@@ -65,7 +74,7 @@ const MainArea = ({
               <h2 className="section-title">Top Artists</h2>
               <button className="section-see-all" onClick={() => setInternalView("see_all_artists")}>See all</button>
             </div>
-            <TopArtists artists={dynamicArtists} onSelectArtist={() => { }} />
+            <TopArtists artists={dynamicArtists} onSelectArtist={onSelectArtist} />
 
             <div className="mainarea-split">
               <div className="split-section">
@@ -116,7 +125,7 @@ const MainArea = ({
               <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
               <h2>All Artists</h2>
             </div>
-            <TopArtists artists={dynamicArtists} onSelectArtist={() => { }} />
+            <TopArtists artists={dynamicArtists} onSelectArtist={onSelectArtist} />
           </div>
         )}
 

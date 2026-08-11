@@ -20,6 +20,7 @@ const Homepage = () => {
   const [activeMenu, setActiveMenu] = useState("home");
   const [songs, setSongs] = useState([]);
   const [searchSongs, setSearchSongs] = useState([]);
+  const [recentSongs, setRecentSongs] = useState([]);
   const [customPlaylists, setCustomPlaylists] = useState([]);
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openCreatePlaylist, setOpenCreatePlaylist] = useState(false);
@@ -28,9 +29,30 @@ const Homepage = () => {
   const { authModalOpen } = useSelector((state) => state.ui);
 
   const normalizedView = (view || "").toLowerCase();
-  const songsToDisplay = normalizedView === "search" ? searchSongs : songs;
+  
+  let songsToDisplay = songs;
+  if (normalizedView === "search") {
+    songsToDisplay = searchSongs;
+  } else if (activeMenu === "recent") {
+    songsToDisplay = recentSongs;
+  } else if (activeMenu?.startsWith("playlist-")) {
+    const playlistId = activeMenu.replace("playlist-", "");
+    const playlist = customPlaylists.find(p => p.id.toString() === playlistId);
+    if (playlist) {
+      songsToDisplay = playlist.songs;
+    }
+  }
 
   const { audioRef, currentIndex, currentSong, currentTime, isPlaying, loopEnabled, duration, isMuted, shuffleEnabled, playbackSpeed, volume, playSongAtIndex, handleTogglePlay, handleNext, handlePrev, handleTimeUpdate, handleLoadedMetadata, handleEnded, handleToggleMute, handleToggleLoop, handleToggleShuffle, handleChangeSpeed, handleSeek, handleChangeVolume } = useAudioPlayer(songsToDisplay);
+
+  useEffect(() => {
+    if (currentSong) {
+      setRecentSongs(prev => {
+        const filtered = prev.filter(s => s.id !== currentSong.id);
+        return [currentSong, ...filtered].slice(0, 30);
+      });
+    }
+  }, [currentSong]);
 
   const playerState = {
     currentSong, isPlaying, currentTime, duration, isMuted, loopEnabled, shuffleEnabled, playbackSpeed, volume
@@ -86,6 +108,25 @@ const Homepage = () => {
     } catch (error) {
       console.error("Failed to load playlist. ", error);
       toast.error(`Failed to load playlist "${tag}".`);
+      setSongs([]);
+    } finally {
+      setIsSongsLoading(false);
+    }
+  };
+
+  const loadArtistSongs = async (artistName) => {
+    if (!artistName) return;
+    try {
+      setIsSongsLoading(true);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/songs/artist/${encodeURIComponent(artistName)}`
+      );
+      setSongs(res.data.results || []);
+      setView("home");
+      setActiveMenu(`artist-${artistName}`);
+    } catch (error) {
+      console.error("Failed to load artist songs. ", error);
+      toast.error(`Failed to load songs for "${artistName}".`);
       setSongs([]);
     } finally {
       setIsSongsLoading(false);
@@ -176,6 +217,7 @@ const Homepage = () => {
           <div className="homepage-content">
             <MainArea
               view={normalizedView}
+              activeMenu={activeMenu}
               currentIndex={currentIndex}
 
               // Pass currentSong and isPlaying to highlight correctly
@@ -183,6 +225,7 @@ const Homepage = () => {
               isPlaying={isPlaying}
 
               onSelectSong={handleSelectSong}
+              onSelectArtist={(artist) => loadArtistSongs(artist.name)}
               onSelectFavourite={handlePlayFavourite}
               onSelectTag={loadPlaylist}
               songsToDisplay={songsToDisplay}

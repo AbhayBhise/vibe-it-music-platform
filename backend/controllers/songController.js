@@ -73,4 +73,22 @@ const searchSongs = async (req, res) => {
     }
 }
 
-export { getSongs, getPlaylistByTag, toggleFavourite, searchSongs };
+const getSongsByArtist = async (req, res) => {
+    try {
+        const artistName = req.params.name?.toString().trim();
+        if (!artistName) {
+            return res.status(400).json({ message: "Artist name is required" });
+        }
+        const limit = parseInt(req.query.limit ?? "20", 10) || 20;
+        const clientId = process.env.JAMENDO_CLIENT_ID || "990ab75c";
+        const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=jsonpretty&artist_name=${encodeURIComponent(artistName)}&limit=${limit}`;
+        const response = await axios.get(url);
+
+        res.status(200).json(response.data);
+    } catch (error) {
+        console.error("Error fetching songs by artist:", error?.response?.data ?? error.message);
+        res.status(500).json({ message: "Error fetching songs by artist, : " + error.message });
+    }
+}
+
+export { getSongs, getPlaylistByTag, toggleFavourite, searchSongs, getSongsByArtist };
