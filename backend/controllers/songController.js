@@ -4,7 +4,8 @@ const getSongs = async (req, res) => {
 
     try {
         // Implementation for fetching songs
-        const response = await axios.get(`https://api.jamendo.com/v3.0/tracks/?client_id=990ab75c&format=jsonpretty&limit=20`);
+        const clientId = process.env.JAMENDO_CLIENT_ID || "990ab75c";
+        const response = await axios.get(`https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=jsonpretty&limit=20`);
         const data = response.data;
         res.status(200).json(data);
     } catch (error) {
@@ -20,7 +21,7 @@ const getPlaylistByTag = async (req, res) => {
             return res.status(400).json({ message: "Tag is required" });
         }
         const limit = parseInt(req.query.limit ?? "10", 10) || 10;
-        const clientId = "990ab75c";
+        const clientId = process.env.JAMENDO_CLIENT_ID || "990ab75c";
         const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=jsonpretty&tags=${tag}&limit=${limit}`;
         const response = await axios.get(url);
 
