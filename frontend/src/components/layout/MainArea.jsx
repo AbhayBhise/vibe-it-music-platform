@@ -30,6 +30,20 @@ const MainArea = ({
 
   const featuredSong = songsToDisplay && songsToDisplay.length > 0 ? songsToDisplay[0] : null;
 
+  // Compute unique artists from songsToDisplay
+  const uniqueArtistsMap = new Map();
+  (songsToDisplay || []).forEach(song => {
+    if (song.artist_name && !uniqueArtistsMap.has(song.artist_name)) {
+      uniqueArtistsMap.set(song.artist_name, {
+        id: song.artist_id || song.artist_name,
+        name: song.artist_name,
+        image: song.image, // Use the song's image as a fallback for the artist image
+        followers: "1M Fans" // Jamendo track API doesn't return followers, use a placeholder
+      });
+    }
+  });
+  const dynamicArtists = Array.from(uniqueArtistsMap.values());
+
   const handlePlayFeatured = () => {
     if (featuredSong) onSelectSong(0);
   };
@@ -51,7 +65,7 @@ const MainArea = ({
               <h2 className="section-title">Top Artists</h2>
               <button className="section-see-all" onClick={() => setInternalView("see_all_artists")}>See all</button>
             </div>
-            <TopArtists artists={[]} onSelectArtist={() => { }} />
+            <TopArtists artists={dynamicArtists} onSelectArtist={() => { }} />
 
             <div className="mainarea-split">
               <div className="split-section">
@@ -102,7 +116,7 @@ const MainArea = ({
               <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
               <h2>All Artists</h2>
             </div>
-            <TopArtists artists={[]} onSelectArtist={() => { }} />
+            <TopArtists artists={dynamicArtists} onSelectArtist={() => { }} />
           </div>
         )}
 

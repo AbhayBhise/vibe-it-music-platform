@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import "../../css/search/SearchBar.css"
 import axios from "axios";
+import toast from 'react-hot-toast';
 const SearchBar = ({setSearchSongs}) => {
 const [query, setQuery]= useState("");
 const [loading, setLoading]= useState(false);
@@ -15,12 +16,12 @@ useEffect(()=>{
   const fetchSongs = async()=>{
     try {
       setLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/songs/playlistByTag/${encodeURIComponent(query)}`)
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/songs/search/${encodeURIComponent(query)}`);
 
       setSearchSongs(res.data.results)
     } catch (error) {
       console.error("Jamendo search failed.", error)
-
+      toast.error("Failed to search songs.");
     }
     finally{
       setLoading(false);

@@ -1,6 +1,5 @@
 import React from "react";
 import "../../css/ui/LoadingOverlay.css";
-import logo from "../../assets/wsa-logo.jpg";
 
 const LoadingOverlay = ({ isVisible }) => {
   return (
@@ -9,8 +8,12 @@ const LoadingOverlay = ({ isVisible }) => {
       aria-hidden={!isVisible}
     >
       <div className="loading-overlay-card">
-        <div className="loading-logo-wrap">
-          <img src={logo} alt="Loading" className="loading-logo" />
+        <div className="loading-bars-wrap">
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
+          <div className="loading-bar"></div>
         </div>
         <div className="loading-text">Discovering your vibe…</div>
       </div>

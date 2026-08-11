@@ -13,6 +13,7 @@ import useAudioPlayer from "../hooks/useAudioPlayer";
 import Modal from "../components/common/Modal";
 import EditProfile from "../components/auth/EditProfile";
 import CreatePlaylistModal from "../components/playlist/CreatePlaylistModal";
+import toast from 'react-hot-toast';
 
 const Homepage = () => {
   const [view, setView] = useState("home");
@@ -60,6 +61,7 @@ const Homepage = () => {
       setSongs(res.data.results || [])
     } catch (error) {
       console.error("Error while fetching the songs", error);
+      toast.error("Failed to fetch songs. Please try again later.");
       setSongs([]);
     } finally {
       setIsSongsLoading(false);
@@ -83,6 +85,7 @@ const Homepage = () => {
       setSongs(res.data.results || []);
     } catch (error) {
       console.error("Failed to load playlist. ", error);
+      toast.error(`Failed to load playlist "${tag}".`);
       setSongs([]);
     } finally {
       setIsSongsLoading(false);

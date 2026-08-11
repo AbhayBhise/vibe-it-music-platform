@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { updateFavourites } from "../../redux/slices/authSlice";
 import { openAuthModal } from "../../redux/slices/uiSlice";
+import toast from 'react-hot-toast';
 
 const TopCharts = ({ songs = [], onSelectSong, currentIndex, currentSong, isPlaying }) => {
     const dispatch = useDispatch();
@@ -45,8 +46,10 @@ const TopCharts = ({ songs = [], onSelectSong, currentIndex, currentSong, isPlay
             );
 
             dispatch(updateFavourites(res.data.favourites));
+            toast.success(res.data.message || "Added to favourites");
         } catch (error) {
             console.error("Like failed:", error);
+            toast.error(error.response?.data?.message || "Failed to update favourites");
         } finally {
             setLikeLoading(false);
         }

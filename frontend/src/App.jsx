@@ -14,6 +14,7 @@ import ResetPassword from "./components/auth/ResetPassword";
 
 
 import ErrorBoundary from "./components/common/ErrorBoundary";
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <Toaster position="top-center" reverseOrder={false} />
       <BrowserRouter>
         <Routes>
           {/* Home */}
