@@ -1,0 +1,84 @@
+.modal-content-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
+.create-playlist-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.playlist-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.playlist-input:focus {
+    border-color: #5B7FFF;
+    background: rgba(91, 127, 255, 0.05);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.modal-btn-cancel {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.modal-btn-create {
+    padding: 10px 24px;
+    background: #5B7FFF;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-btn-create:hover {
+    background: #4A6FEF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(91, 127, 255, 0.3);
+}
+
+.modal-btn-create:disabled {
+    background: rgba(91, 127, 255, 0.5);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}

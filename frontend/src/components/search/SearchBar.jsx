@@ -27,8 +27,8 @@ useEffect(()=>{
 
     }
   };
-const debounce = setTimeout(fetchSongs, 1000);
-return ()=>clearInterval(debounce);
+const debounce = setTimeout(fetchSongs, 500);
+return () => clearTimeout(debounce);
 },[query, setSearchSongs]);
 
 

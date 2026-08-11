@@ -2,6 +2,7 @@ import React from "react";
 import { GiPauseButton } from "react-icons/gi";
 import { FaCirclePlay } from "react-icons/fa6";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { ImSpinner2 } from "react-icons/im";
 import {
   TbPlayerTrackNextFilled,
   TbPlayerTrackPrevFilled,

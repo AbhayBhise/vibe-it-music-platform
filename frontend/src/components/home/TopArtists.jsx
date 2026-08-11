@@ -2,7 +2,6 @@ import React from "react";
 import "../../css/home/TopArtists.css";
 
 const TopArtists = ({ artists = [], onSelectArtist }) => {
-    // Default artists if none provided
     const defaultArtists = [
         { id: 1, name: "Travis Scott", followers: "8.9M Fans", image: null },
         { id: 2, name: "Billie Eilish", followers: "10M Fans", image: null },
@@ -16,11 +15,7 @@ const TopArtists = ({ artists = [], onSelectArtist }) => {
 
     return (
         <div className="top-artists">
-            <div className="top-artists-header">
-                <h2 className="top-artists-title">Top Artists</h2>
-                <button className="top-artists-see-all">See all</button>
-            </div>
-
+            {/* Header removed from here to allow MainArea config */}
             <div className="top-artists-grid">
                 {displayArtists.slice(0, 6).map((artist, index) => (
                     <div

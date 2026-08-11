@@ -1,78 +1,66 @@
+/* HomePage Premium Layout */
 .homepage-root {
-  @apply flex flex-col h-screen m-0 box-border;
-  background: #0a0a0a;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-app);
+  /* Mesh gradient background */
+  background-image:
+    radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.1) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--fg-primary);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
 .homepage-main-wrapper {
-  @apply flex flex-1 min-h-0 gap-0;
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  /* Prevent body scroll */
   position: relative;
 }
 
+/* Sidebar Wrapper - content handled in SideMenu.css */
 .homepage-sidebar {
-  @apply flex-none w-[260px] p-0 flex flex-col min-h-0 box-border;
-  background: rgba(15, 15, 15, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
-  overflow-y: auto;
+  /* Dimensions handled by SideMenu.css root but wrapper needed for flex */
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
 }
 
-.homepage-sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.homepage-sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.homepage-sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
+/* Main Content Area */
 .homepage-content {
-  @apply flex-1 flex flex-col min-h-0 box-border overflow-y-auto;
-  background: #0a0a0a;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  /* Let mesh gradient show through */
 }
 
-/* Custom scrollbar for main content */
-.homepage-content::-webkit-scrollbar {
-  width: 8px;
-}
+/* Scrollbar customization is in base.css global or specific components */
 
-.homepage-content::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.homepage-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.homepage-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .homepage-sidebar {
-    @apply w-[220px];
-  }
-}
-
-@media (max-width: 968px) {
-  .homepage-sidebar {
-    @apply w-[70px];
-  }
+/* Responsive */
+@media (max-width: 1024px) {
+  /* Adjustments if needed, usually Sidebar component handles width changes */
 }
 
 @media (max-width: 768px) {
   .homepage-sidebar {
-    @apply w-0 p-0;
-    border-right: none;
-    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+    z-index: 100;
+  }
+
+  .homepage-sidebar.open {
+    transform: translateX(0);
   }
 }

@@ -1,84 +1,164 @@
+/* MainArea Premium Styles */
 .mainarea-root {
-  @apply flex flex-col h-full min-h-0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: relative;
+  /* Scroll handling is on .mainarea-scroll */
+  min-height: 0;
 }
 
 .mainarea-top {
-  @apply flex-none px-6 py-4;
+  flex: none;
+  padding: var(--space-md) var(--space-lg);
   display: flex;
   justify-content: flex-end;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  /* border-bottom? Maybe not if TopNav handles it globally */
+  height: 0;
+  /* Hidden if TopNav is fixed on top, 
+                or this is just for spacer? 
+                Actually TopNav is outside MainArea.
+                This might be for Auth buttons if TopNav didn't have them? 
+                Let's keep it minimal or remove if duplicate.
+                Current App structure: TopNav is global. 
+                Home page structure: TopNav -> MainWrapper -> Sidebar/MainContent.
+                So MainArea is inside MainContent. 
+                Use this space for "Page specific actions" if any.
+             */
+  height: auto;
+  min-height: 0;
+  display: none;
+  /* Hiding for now as TopNav covers it */
 }
 
 .mainarea-scroll {
-  @apply flex-1 overflow-y-auto;
-  padding: 24px 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg) var(--space-xl) 120px;
+  /* Bottom padding for player */
+  scroll-behavior: smooth;
 }
 
+/* Sections */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  padding: 0 var(--space-xs);
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fg-primary);
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.section-see-all {
+  background: transparent;
+  border: none;
+  color: var(--fg-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.section-see-all:hover {
+  color: var(--accent-primary);
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+/* Split Layout */
 .mainarea-split {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  padding: 0 24px;
+  grid-template-columns: 1fr 1.2fr;
+  /* Charts section slightly wider */
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
 }
 
-.search-results-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 24px 24px 16px;
+.split-section {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Loading State */
-.mainarea-loading {
-  opacity: 0.5;
-  pointer-events: none;
+/* Expanded View */
+.expanded-view {
+  padding: var(--space-md) 0;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.mainarea-loaded {
-  opacity: 1;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Custom scrollbar */
-.mainarea-scroll::-webkit-scrollbar {
-  width: 8px;
+.expanded-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(9, 9, 11, 0.8);
+  backdrop-filter: blur(var(--blur-glass));
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-top: -20px;
+  /* Offset to stick at top */
 }
 
-.mainarea-scroll::-webkit-scrollbar-track {
-  background: transparent;
+.expanded-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--fg-primary);
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.mainarea-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  color: var(--fg-secondary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.mainarea-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.12);
+.back-btn:hover {
+  background: var(--bg-glass-hover);
+  color: var(--fg-primary);
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-glow);
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
   .mainarea-split {
     grid-template-columns: 1fr;
-    gap: 24px;
-  }
-}
-
-@media (max-width: 768px) {
-  .mainarea-top {
-    padding: 12px 16px;
-  }
-
-  .mainarea-scroll {
-    padding: 16px 0;
-  }
-
-  .mainarea-split {
-    padding: 0 16px;
-  }
-
-  .search-results-title {
-    margin: 16px 16px 12px;
+    gap: var(--space-xl);
   }
 }

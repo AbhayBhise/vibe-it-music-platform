@@ -1,35 +1,39 @@
 import React from "react";
 import "../../css/home/GenreGrid.css";
+import { MdLibraryMusic, MdAlbum, MdSurfing, MdPiano, MdMic, MdGraphicEq, MdMusicNote } from "react-icons/md";
+import { FaGuitar } from "react-icons/fa"; // Use FA for guitar if MD missing or just stick to MD
 
-const GenreGrid = ({ genres = [], onSelectGenre }) => {
-    // Default genres with colors
-    const defaultGenres = [
-        { id: 1, name: "Dance Beat", color: "#6B8EFF" },
-        { id: 2, name: "Electro Pop", color: "#C2A887" },
-        { id: 3, name: "Alternative Indie", color: "#B57B63" },
-        { id: 4, name: "Classical Crossover", color: "#FF6B9D" },
-        { id: 5, name: "Hip Hop", color: "#4A5568" },
-        { id: 6, name: "Pop", color: "#5B6EDD" },
+const GenreGrid = ({ genres, onSelectGenre }) => {
+    // Content updated to "Playlists"
+    const defaultPlaylists = [
+        { id: "chill", name: "Chill", icon: <MdSurfing size={20} /> },
+        { id: "workout", name: "Workout", icon: <MdGraphicEq size={20} /> },
+        { id: "rock", name: "Rock", icon: <FaGuitar size={18} /> },
+        { id: "refreshing", name: "Refreshing", icon: <MdLibraryMusic size={20} /> },
+        { id: "focus", name: "Focus", icon: <MdAlbum size={20} /> },
+        { id: "party", name: "Party", icon: <MdMic size={20} /> },
     ];
 
-    const displayGenres = genres.length > 0 ? genres : defaultGenres;
+    // Ignore passed 'genres' if we want to force this layout, or merge? 
+    // User asked to "replace the genere block with the playlist block".
+    // So I will force these defaults if 'genres' is empty or just use them.
+    // I will use them as default.
+
+    const displayItems = defaultPlaylists;
 
     return (
         <div className="genre-grid">
-            <div className="genre-grid-header">
-                <h2 className="genre-grid-title">Genres</h2>
-                <button className="genre-grid-see-all">See all</button>
-            </div>
-
             <div className="genre-grid-container">
-                {displayGenres.map((genre) => (
+                {displayItems.map((item, index) => (
                     <div
-                        key={genre.id}
-                        className="genre-card"
-                        style={{ backgroundColor: genre.color || "#333" }}
-                        onClick={() => onSelectGenre && onSelectGenre(genre)}
+                        key={item.id || index}
+                        className="genre-bubble"
+                        onClick={() => onSelectGenre && onSelectGenre(item.name)}
                     >
-                        <span className="genre-name">{genre.name}</span>
+                        <div className="genre-icon-bubble">
+                            {item.icon}
+                        </div>
+                        <span className="genre-name">{item.name}</span>
                     </div>
                 ))}
             </div>

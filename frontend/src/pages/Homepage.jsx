@@ -12,12 +12,16 @@ import axios from "axios";
 import useAudioPlayer from "../hooks/useAudioPlayer";
 import Modal from "../components/common/Modal";
 import EditProfile from "../components/auth/EditProfile";
+import CreatePlaylistModal from "../components/playlist/CreatePlaylistModal";
 
 const Homepage = () => {
   const [view, setView] = useState("home");
+  const [activeMenu, setActiveMenu] = useState("home");
   const [songs, setSongs] = useState([]);
   const [searchSongs, setSearchSongs] = useState([]);
+  const [customPlaylists, setCustomPlaylists] = useState([]);
   const [openEditProfile, setOpenEditProfile] = useState(false);
+  const [openCreatePlaylist, setOpenCreatePlaylist] = useState(false);
   const [isSongsLoading, setIsSongsLoading] = useState(true);
   const auth = useSelector((state) => state.auth);
   const { authModalOpen } = useSelector((state) => state.ui);
@@ -47,22 +51,23 @@ const Homepage = () => {
     onChangeVolume: handleChangeVolume
   };
 
+  const fetchAllSongs = async () => {
+    try {
+      setIsSongsLoading(true);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/songs`,
+      );
+      setSongs(res.data.results || [])
+    } catch (error) {
+      console.error("Error while fetching the songs", error);
+      setSongs([]);
+    } finally {
+      setIsSongsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchInitialSongs = async () => {
-      try {
-        setIsSongsLoading(true);
-        const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/songs`,
-        );
-        setSongs(res.data.results || [])
-      } catch (error) {
-        console.error("Error while fetching the songs", error);
-        setSongs([]);
-      } finally {
-        setIsSongsLoading(false);
-      }
-    };
-    fetchInitialSongs();
+    fetchAllSongs();
   }, []);
 
   const loadPlaylist = async (tag) => {
@@ -104,7 +109,24 @@ const Homepage = () => {
   const handleSearch = (query) => {
     if (query && query.trim()) {
       setView("search");
+      setActiveMenu("search");
     }
+  };
+
+  const handleResetExplore = () => {
+    setView("home");
+    setActiveMenu("home");
+    fetchAllSongs();
+  };
+
+  const handleCreatePlaylist = (name) => {
+    const newPlaylist = {
+      id: Date.now(),
+      name: name,
+      songs: []
+    };
+    setCustomPlaylists([...customPlaylists, newPlaylist]);
+    setOpenCreatePlaylist(false);
   };
 
   return (
@@ -126,6 +148,7 @@ const Homepage = () => {
           user={auth.user}
           onSearch={handleSearch}
           activeTab="music"
+          onOpenEditProfile={() => setOpenEditProfile(true)}
         />
 
         <div className="homepage-main-wrapper">
@@ -134,9 +157,15 @@ const Homepage = () => {
             <SideMenu
               setView={setView}
               view={normalizedView}
+              activeMenu={activeMenu}
+              setActiveMenu={setActiveMenu}
               onOpenEditProfile={() => setOpenEditProfile(true)}
               currentSong={currentSong}
               isPlaying={isPlaying}
+              onSelectTag={loadPlaylist}
+              onResetExplore={handleResetExplore}
+              onCreatePlaylist={() => setOpenCreatePlaylist(true)}
+              customPlaylists={customPlaylists}
             />
           </div>
 
@@ -145,12 +174,18 @@ const Homepage = () => {
             <MainArea
               view={normalizedView}
               currentIndex={currentIndex}
+
+              // Pass currentSong and isPlaying to highlight correctly
+              currentSong={currentSong}
+              isPlaying={isPlaying}
+
               onSelectSong={handleSelectSong}
               onSelectFavourite={handlePlayFavourite}
               onSelectTag={loadPlaylist}
               songsToDisplay={songsToDisplay}
               setSearchSongs={setSearchSongs}
               isSongsLoading={isSongsLoading}
+              onBackToHome={() => setView("home")}
             />
           </div>
 
@@ -165,6 +200,15 @@ const Homepage = () => {
         {openEditProfile && (
           <Modal onClose={() => setOpenEditProfile(false)}>
             <EditProfile onClose={() => setOpenEditProfile(false)} />
+          </Modal>
+        )}
+
+        {openCreatePlaylist && (
+          <Modal onClose={() => setOpenCreatePlaylist(false)}>
+            <CreatePlaylistModal
+              onClose={() => setOpenCreatePlaylist(false)}
+              onCreate={handleCreatePlaylist}
+            />
           </Modal>
         )}
       </div>

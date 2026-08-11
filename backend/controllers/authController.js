@@ -6,6 +6,7 @@ import crypto from "crypto";
 import sendMail from "../utils/sendMail.js";
 
 dotenv.config();
+
 const createToken = (userId) => {
     return jwt.sign(
         { id: userId },
@@ -16,19 +17,15 @@ const createToken = (userId) => {
 
 const signup = async (req, res) => {
     try {
-        // Get the data from the frontend
         const { name, email, password, avatar } = req.body;
 
-
-        // Check data is valid or not:
         if (!name || !email || !password) {
-            return res.status(400).json({ message: "All the fields are required" });
+            return res.status(400).json({ message: "All fields are required." });
         }
 
-        const existingUser = await User.findOne({ email: email });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ message: "User with this EmailId already exist." });
-
+            return res.status(400).json({ message: "User with this Email already exists." });
         }
 
         let avatarUrl = "";
@@ -37,15 +34,16 @@ const signup = async (req, res) => {
                 file: avatar,
                 fileName: `avatar_${Date.now()}.jpg`,
                 folder: "/mern-music-player",
-
             });
             avatarUrl = uploadResponse.url;
         }
+
         const user = await User.create({
             name, email, password, avatar: avatarUrl,
-        })
+        });
 
-        const token = createToken(user._id)
+        const token = createToken(user._id);
+
         res.status(201).json({
             message: "User created successfully",
             user: {
@@ -56,15 +54,11 @@ const signup = async (req, res) => {
                 favourites: user.favourites || [],
             },
             token,
-
         });
+    } catch (error) {
+        console.error("Signup Error:", error);
+        res.status(500).json({ message: "An error occurred during signup." });
     }
-    catch (error) {
-        console.log("Signup not successful.");
-        res.status(500).json({ message: "Signup Error!!" });
-    }
-
-
 };
 
 const login = async (req, res) => {
@@ -72,17 +66,17 @@ const login = async (req, res) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            res.status(400).json({ message: "Email and Password are required." })
+            return res.status(400).json({ message: "Email and Password are required." });
         }
 
-        const user = await User.findOne({ email: email });
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: "Email id doesn't exist." });
+            return res.status(400).json({ message: "Invalid credentials." });
         }
 
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials." })
+            return res.status(400).json({ message: "Invalid credentials." });
         }
 
         const token = createToken(user._id);
@@ -97,131 +91,114 @@ const login = async (req, res) => {
                 favourites: user.favourites || [],
             },
             token,
-        },
-            
-
-        );
-    }
-
-    catch (error) {
-        console.log("Login not successful.");
-        res.status(500).json({ message: "Login Error!!" });
-    }
-
-}
-
-//Protected controller (Protected Routing)
-
-const getMe = (req,res)=>{
-    if(!req.user) return res.status(401).json({message:"User not Authenticated"});
-    res.status(200).json(req.user);
-}
-
-const forgotPassword = async (req,res)=>{
-    try{
-const {email} = req.body;
-if(!email){return res.status(400).json({message:"Email is required"}) }
-
-const user = await User.findOne({email});
-if(!user){ return res.status(400).json({message:"User with this email does not exist"})}
-
-// Generate Reset Token : 
-const resetToken = crypto.randomBytes(32).toString("hex");
-
-// Hash the token before saving to DB
-const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-
-
-user.resetPasswordToken = hashedToken;
-user.resetPasswordTokenExpires = Date.now() + 10*60*1000; // Token valid for 10 minutes
-
-
-await user.save();
-const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
-// Send Email to user with the reset link
-await sendMail({
-    to: user.email,
-    subject: "Password Reset Request",
-    html: `<h3>You requested for a password reset.</h3> <br> 
-    <p>Click <a href="${resetUrl}">here</a> to reset your password. This link is valid for 10 minutes.</p>`
-});
-
-
-res.status(200).json({message:"Password reset link has been sent to your email."});
-
-}
-    catch(error){
-        console.log("Error in forgot password:", error);
-        res.status(500).json({message:"Something went wrong."});
-    }
-}
-
-const resetPassword = async (req,res)=>{
-    try {
-        const {token} = req.params;
-    const {password} = req.body;
-    if( !password || password.length <8){
-        return res.status(400).json({message:"Invalid request. Password must be at least 8 characters long."});
-    }
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-    const user = await User.findOne({
-        resetPasswordToken: hashedToken,
-        resetPasswordTokenExpires: {$gt: Date.now()}
-    });
-
-    if(!user){
-        return res.status(400).json({message:"Token is invalid or expired."});
-    }
- 
-    user.password = password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordTokenExpires = undefined;
-
-    await user.save();
-
-    res.status(200).json({message:"Password reset successfully."});
+        });
     } catch (error) {
-        console.log("Error occured while resetting password:", error.message);
-        res.status(500).json({message:"Something went wrong."});
+        console.error("Login Error:", error);
+        res.status(500).json({ message: "An error occurred during login." });
     }
 };
 
-const editProfile = async (req,res)=>{
+// Protected controller (Protected Routing)
+const getMe = (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "User not authenticated." });
+    res.status(200).json(req.user);
+};
+
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: "Email is required." });
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ message: "User with this email does not exist." });
+
+        const resetToken = crypto.randomBytes(32).toString("hex");
+        const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+        user.resetPasswordToken = hashedToken;
+        user.resetPasswordTokenExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+        await user.save();
+        const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+        await sendMail({
+            to: user.email,
+            subject: "Password Reset Request",
+            html: `<h3>You requested a password reset.</h3><br>
+            <p>Click <a href="${resetUrl}">here</a> to reset your password. This link is valid for 10 minutes.</p>`
+        });
+
+        res.status(200).json({ message: "Password reset link has been sent to your email." });
+    } catch (error) {
+        console.error("Forgot Password Error:", error);
+        res.status(500).json({ message: "Something went wrong." });
+    }
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+
+        if (!password || password.length < 8) {
+            return res.status(400).json({ message: "Password must be at least 8 characters long." });
+        }
+
+        const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+        const user = await User.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordTokenExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: "Token is invalid or expired." });
+        }
+
+        user.password = password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordTokenExpires = undefined;
+
+        await user.save();
+
+        res.status(200).json({ message: "Password reset successfully." });
+    } catch (error) {
+        console.error("Reset Password Error:", error);
+        res.status(500).json({ message: "Something went wrong." });
+    }
+};
+
+const editProfile = async (req, res) => {
     try {
         const userId = req.user?.id;
-        if(!userId){
-            return res.status(401).json({message:"User not authenticated."});
+        if (!userId) {
+            return res.status(401).json({ message: "User not authenticated." });
         }
-        const {name,email,avatar,currentPassword,newPassword} = req.body;
 
-        console.log(name,email,avatar,currentPassword,newPassword);
-
+        const { name, email, avatar, currentPassword, newPassword } = req.body;
         const user = await User.findById(userId);
-console.log("User found:", user);
 
-        // if(!user){
-        //     return res.status(404).json({message:"User not found."});
-        // }
-
-        if(name) user.name = name;
-        if(email) user.email = email;
-
-        if(currentPassword && newPassword){
-           if(!currentPassword || !newPassword){
-            return res.status(400).json({message:"Both current and new passwords are required."});
-           }
-           const isMatch = await user.comparePassword(currentPassword);
-           if(!isMatch){
-            return res.status(400).json({message:"Current password is incorrect."});
-           }
-           if(newPassword.length <8){
-            return res.status(400).json({message:"New password must be at least 8 characters long."});
-           }
-              user.password = newPassword;
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
         }
 
-        if(avatar){
+        if (name) user.name = name;
+        if (email) user.email = email;
+
+        if (currentPassword && newPassword) {
+            if (!currentPassword || !newPassword) {
+                return res.status(400).json({ message: "Both current and new passwords are required." });
+            }
+            const isMatch = await user.comparePassword(currentPassword);
+            if (!isMatch) {
+                return res.status(400).json({ message: "Current password is incorrect." });
+            }
+            if (newPassword.length < 8) {
+                return res.status(400).json({ message: "New password must be at least 8 characters long." });
+            }
+            user.password = newPassword;
+        }
+
+        if (avatar) {
             const uploadResponse = await imagekit.upload({
                 file: avatar,
                 fileName: `avatar_${userId}_${Date.now()}.jpg`,
@@ -229,22 +206,22 @@ console.log("User found:", user);
             });
             user.avatar = uploadResponse.url;
         }
-            await user.save();
-            return res.status(200).json({
-                message:"Profile updated successfully.",
-                user:{
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    avatar: user.avatar,
-                }
-            });
-        
 
+        await user.save();
+        
+        return res.status(200).json({
+            message: "Profile updated successfully.",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar,
+            }
+        });
     } catch (error) {
-        console.error("Error in editing profile:", error.message);
-        res.status(500).json({message:"Something went wrong while editing profile."});
+        console.error("Edit Profile Error:", error);
+        res.status(500).json({ message: "Something went wrong while editing profile." });
     }
-}
+};
 
 export { signup, login, getMe, forgotPassword, resetPassword, editProfile };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Auth from "../auth/Auth";
 import SearchBar from "../search/SearchBar";
@@ -7,68 +7,113 @@ import HeroSection from "../home/HeroSection";
 import TopArtists from "../home/TopArtists";
 import GenreGrid from "../home/GenreGrid";
 import TopCharts from "../home/TopCharts";
+import { FaArrowLeft } from "react-icons/fa";
 
 import "../../css/mainArea/MainArea.css";
 import { useSelector } from "react-redux";
 
-const MainArea = ({ view,
+const MainArea = ({
+  view,
   currentIndex,
+  currentSong,
+  isPlaying,
   onSelectSong,
   onSelectFavourite,
   onSelectTag,
   songsToDisplay,
   setSearchSongs,
-  isSongsLoading, }) => {
+  isSongsLoading,
+  onBackToHome
+}) => {
   const auth = useSelector((state) => state.auth);
+  const [internalView, setInternalView] = useState("default");
 
-  // Get featured song (first song or random)
-  const featuredSong = songsToDisplay && songsToDisplay.length > 0
-    ? songsToDisplay[0]
-    : null;
+  const featuredSong = songsToDisplay && songsToDisplay.length > 0 ? songsToDisplay[0] : null;
 
   const handlePlayFeatured = () => {
-    if (featuredSong) {
-      onSelectSong(0);
-    }
+    if (featuredSong) onSelectSong(0);
   };
+
+  const handleBack = () => setInternalView("default");
 
   return (
     <div className={`mainarea-root ${isSongsLoading ? "mainarea-loading" : "mainarea-loaded"}`}>
-      {/* Top Bar with Auth */}
       <div className="mainarea-top">
         <Auth />
       </div>
 
-      {/* Scrollable Content */}
       <div className="mainarea-scroll">
-        {view === "home" && (
+        {view === "home" && internalView === "default" && (
           <>
-            {/* Hero Section */}
-            <HeroSection
-              featuredSong={featuredSong}
-              onPlay={handlePlayFeatured}
-            />
+            <HeroSection featuredSong={featuredSong} onPlay={handlePlayFeatured} />
 
-            {/* Top Artists */}
-            <TopArtists
-              artists={[]}
-              onSelectArtist={() => { }}
-            />
+            <div className="section-header">
+              <h2 className="section-title">Top Artists</h2>
+              <button className="section-see-all" onClick={() => setInternalView("see_all_artists")}>See all</button>
+            </div>
+            <TopArtists artists={[]} onSelectArtist={() => { }} />
 
-            {/* Genres and Top Charts Side by Side */}
             <div className="mainarea-split">
-              <GenreGrid
-                genres={[]}
-                onSelectGenre={onSelectTag}
-              />
+              <div className="split-section">
+                <div className="section-header">
+                  <h2 className="section-title">Playlists</h2>
+                  <button className="section-see-all" onClick={() => setInternalView("see_all_genres")}>See all</button>
+                </div>
+                <GenreGrid genres={[]} onSelectGenre={onSelectTag} />
+              </div>
 
-              <TopCharts
-                songs={songsToDisplay}
-                onSelectSong={onSelectSong}
-                currentIndex={currentIndex}
-              />
+              <div className="split-section">
+                <div className="section-header">
+                  <h2 className="section-title">Top Charts</h2>
+                  <button className="section-see-all" onClick={() => setInternalView("see_all_charts")}>See all</button>
+                </div>
+                <TopCharts
+                  songs={songsToDisplay.slice(0, 4)}
+                  onSelectSong={onSelectSong}
+                  currentIndex={currentIndex}
+                  currentSong={currentSong}
+                  isPlaying={isPlaying}
+                />
+              </div>
             </div>
           </>
+        )}
+
+        {/* Expanded Views */}
+        {view === "home" && internalView === "see_all_charts" && (
+          <div className="expanded-view">
+            <div className="expanded-header">
+              <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
+              <h2>Top Charts</h2>
+            </div>
+            <TopCharts
+              songs={songsToDisplay}
+              onSelectSong={onSelectSong}
+              currentIndex={currentIndex}
+              currentSong={currentSong}
+              isPlaying={isPlaying}
+            />
+          </div>
+        )}
+
+        {view === "home" && internalView === "see_all_artists" && (
+          <div className="expanded-view">
+            <div className="expanded-header">
+              <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
+              <h2>All Artists</h2>
+            </div>
+            <TopArtists artists={[]} onSelectArtist={() => { }} />
+          </div>
+        )}
+
+        {view === "home" && internalView === "see_all_genres" && (
+          <div className="expanded-view">
+            <div className="expanded-header">
+              <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
+              <h2>All Playlists</h2>
+            </div>
+            <GenreGrid genres={[]} onSelectGenre={onSelectTag} />
+          </div>
         )}
 
         {view === "search" && (
@@ -79,6 +124,8 @@ const MainArea = ({ view,
               songs={songsToDisplay}
               onSelectSong={onSelectSong}
               currentIndex={currentIndex}
+              currentSong={currentSong}
+              isPlaying={isPlaying}
             />
           </>
         )}

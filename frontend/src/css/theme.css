@@ -1,0 +1,61 @@
+/* Dark Glassmorphism Theme Variables */
+:root {
+    /* Colors - Zinc Palette + Accents */
+    --bg-app: #09090b;
+    --bg-panel: rgba(255, 255, 255, 0.03);
+    --bg-glass: rgba(255, 255, 255, 0.05);
+    --bg-glass-hover: rgba(255, 255, 255, 0.08);
+    --bg-glass-active: rgba(255, 255, 255, 0.12);
+
+    --fg-primary: #fafafa;
+    --fg-secondary: #a1a1aa;
+    --fg-tertiary: #71717a;
+
+    --accent-primary: #8b5cf6;
+    /* Violet 500 */
+    --accent-glow: #a78bfa;
+    /* Violet 400 */
+    --accent-gradient: linear-gradient(135deg, #8b5cf6, #d946ef);
+    /* Violet -> Fuchsia */
+
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-highlight: rgba(255, 255, 255, 0.15);
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+    /* Effects */
+    --blur-panel: 20px;
+    --blur-glass: 12px;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.15);
+
+    /* Animation */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Utilities */
+.glass-panel {
+    background: var(--bg-panel);
+    backdrop-filter: blur(var(--blur-panel));
+    border: 1px solid var(--border-subtle);
+}
+
+.text-gradient {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
