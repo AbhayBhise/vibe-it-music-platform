@@ -38,14 +38,17 @@ const toggleFavourite = async (req, res) => {
         const user = req.user;
         const song = req.body.song;
         const exists = user.favourites.find((fav => fav.id === song.id));
+        let msg = "";
         if (exists) {
             user.favourites = user.favourites.filter((fav) => fav.id !== song.id);
+            msg = "Song removed from favourites.";
         }
         else {
             user.favourites.push(song);
+            msg = "Song added to favourites.";
         }
         await user.save();
-        res.status(200).json({ message: "Song added to favourites.", favourites: user.favourites });
+        res.status(200).json({ message: msg, favourites: user.favourites });
     } catch (error) {
         console.error("Error toggling favourite song:", error.message);
         res.status(400).json({ message: "Error toggling favourite song, : " + error.message });
