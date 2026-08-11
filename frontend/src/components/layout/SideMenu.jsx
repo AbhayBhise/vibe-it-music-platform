@@ -70,31 +70,31 @@ const SideMenu = ({
           </button>
           <button
             className={getNavBtnClass("genres")}
-            onClick={() => handleTagClick("Pop", "genres")}
+            onClick={() => handleTagClick("pop", "genres")}
           >
             <MdLibraryMusic className="sidemenu-nav-icon" size={20} />
-            <span>Genres (Pop)</span>
+            <span>Pop Hits</span>
           </button>
           <button
             className={getNavBtnClass("albums")}
-            onClick={() => handleTagClick("Top 50", "albums")}
+            onClick={() => handleTagClick("electronic", "albums")}
           >
             <MdAlbum className="sidemenu-nav-icon" size={20} />
-            <span>Albums (Top 50)</span>
+            <span>Electronic</span>
           </button>
           <button
             className={getNavBtnClass("artists")}
-            onClick={() => handleTagClick("Rock", "artists")}
+            onClick={() => handleTagClick("rock", "artists")}
           >
             <MdPerson className="sidemenu-nav-icon" size={20} />
-            <span>Artists (Rock)</span>
+            <span>Rock Classics</span>
           </button>
           <button
             className={getNavBtnClass("radio")}
-            onClick={() => handleTagClick("Global", "radio")}
+            onClick={() => handleTagClick("jazz", "radio")}
           >
             <MdRadio className="sidemenu-nav-icon" size={20} />
-            <span>Radio</span>
+            <span>Jazz Radio</span>
           </button>
         </nav>
       </div>
@@ -146,25 +146,11 @@ const SideMenu = ({
             <span>Create New</span>
           </button>
           <button
-            className={getNavBtnClass("design")}
-            onClick={() => handleTagClick("Design Flow", "design")}
-          >
-            <MdQueueMusic className="sidemenu-nav-icon" size={20} />
-            <span>Design Flow</span>
-          </button>
-          <button
             className={getNavBtnClass("favourite")}
             onClick={handleFavouriteClick}
           >
             <AiOutlineHeart className="sidemenu-nav-icon" size={20} />
             <span>Favourites</span>
-          </button>
-          <button
-            className={getNavBtnClass("nightjams")}
-            onClick={() => handleTagClick("Night Jams", "nightjams")}
-          >
-            <MdQueueMusic className="sidemenu-nav-icon" size={20} />
-            <span>Nighte Jams</span>
           </button>
 
           {/* User Created Playlists */}

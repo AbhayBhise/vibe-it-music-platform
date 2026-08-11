@@ -5,21 +5,16 @@ import { FaGuitar } from "react-icons/fa"; // Use FA for guitar if MD missing or
 
 const GenreGrid = ({ genres, onSelectGenre }) => {
     // Content updated to "Playlists"
-    const defaultPlaylists = [
-        { id: "chill", name: "Chill", icon: <MdSurfing size={20} /> },
-        { id: "workout", name: "Workout", icon: <MdGraphicEq size={20} /> },
+    const realPlaylists = [
+        { id: "pop", name: "Pop", icon: <MdSurfing size={20} /> },
+        { id: "electronic", name: "Electronic", icon: <MdGraphicEq size={20} /> },
         { id: "rock", name: "Rock", icon: <FaGuitar size={18} /> },
-        { id: "refreshing", name: "Refreshing", icon: <MdLibraryMusic size={20} /> },
-        { id: "focus", name: "Focus", icon: <MdAlbum size={20} /> },
-        { id: "party", name: "Party", icon: <MdMic size={20} /> },
+        { id: "jazz", name: "Jazz", icon: <MdLibraryMusic size={20} /> },
+        { id: "hiphop", name: "Hip Hop", icon: <MdAlbum size={20} /> },
+        { id: "classical", name: "Classical", icon: <MdMic size={20} /> },
     ];
 
-    // Ignore passed 'genres' if we want to force this layout, or merge? 
-    // User asked to "replace the genere block with the playlist block".
-    // So I will force these defaults if 'genres' is empty or just use them.
-    // I will use them as default.
-
-    const displayItems = defaultPlaylists;
+    const displayItems = realPlaylists;
 
     return (
         <div className="genre-grid">
@@ -28,7 +23,7 @@ const GenreGrid = ({ genres, onSelectGenre }) => {
                     <div
                         key={item.id || index}
                         className="genre-bubble"
-                        onClick={() => onSelectGenre && onSelectGenre(item.name)}
+                        onClick={() => onSelectGenre && onSelectGenre(item.id)}
                     >
                         <div className="genre-icon-bubble">
                             {item.icon}
