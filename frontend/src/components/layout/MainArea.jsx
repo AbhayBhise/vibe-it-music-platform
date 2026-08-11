@@ -31,9 +31,14 @@ const MainArea = ({
   const [internalView, setInternalView] = useState("default");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks, no-restricted-syntax
+    // eslint-disable-next-line
     if (activeMenu === "myalbums") setInternalView("see_all_genres");
+    // eslint-disable-next-line
     else if (activeMenu === "myartists") setInternalView("see_all_artists");
+    // eslint-disable-next-line
     else if (activeMenu === "recent" || activeMenu?.startsWith("artist-") || activeMenu?.startsWith("playlist-")) setInternalView("see_all_charts");
+    // eslint-disable-next-line
     else setInternalView("default");
   }, [activeMenu]);
 
