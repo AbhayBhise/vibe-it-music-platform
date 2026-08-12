@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { FiSearch, FiBell, FiSettings, FiLogOut, FiUser, FiLogIn } from "react-icons/fi";
-import { CiUser, CiLogin } from "react-icons/ci";
+import { FiSearch, FiBell, FiSettings, FiLogOut, FiUser, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { CiUser } from "react-icons/ci";
 import logo from "../../assets/wsa-logo.jpg";
 import "../../css/layout/TopNav.css";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 import { openAuthModal } from "../../redux/slices/uiSlice";
 
-const TopNav = ({ user, onSearch, activeTab = "music", onOpenEditProfile }) => {
+const TopNav = ({ 
+  user, onSearch, activeTab = "music", onOpenEditProfile,
+  handleGoBack, handleGoForward, canGoBack, canGoForward 
+}) => {
   const tabs = ["MUSIC", "PODCAST", "LIVE"];
   const dispatch = useDispatch();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -27,10 +30,29 @@ const TopNav = ({ user, onSearch, activeTab = "music", onOpenEditProfile }) => {
 
   return (
     <nav className="topnav-root">
-      {/* Left: Logo */}
+      {/* Left: Logo & Navigation */}
       <div className="topnav-left">
         <img src={logo} alt="Vibe It" className="topnav-logo" />
         <h1 className="topnav-brand">Vibe It</h1>
+        
+        <div className="topnav-nav-arrows" style={{ display: 'flex', gap: '8px', marginLeft: '24px' }}>
+          <button 
+            className="topnav-icon-btn" 
+            onClick={handleGoBack} 
+            disabled={!canGoBack}
+            style={{ opacity: canGoBack ? 1 : 0.5, cursor: canGoBack ? 'pointer' : 'not-allowed' }}
+          >
+            <FiChevronLeft size={24} />
+          </button>
+          <button 
+            className="topnav-icon-btn" 
+            onClick={handleGoForward} 
+            disabled={!canGoForward}
+            style={{ opacity: canGoForward ? 1 : 0.5, cursor: canGoForward ? 'pointer' : 'not-allowed' }}
+          >
+            <FiChevronRight size={24} />
+          </button>
+        </div>
       </div>
 
       {/* Center-Left: Tabs */}

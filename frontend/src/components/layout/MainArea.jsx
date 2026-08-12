@@ -24,22 +24,13 @@ const MainArea = ({
   songsToDisplay,
   searchQuery,
   isSongsLoading,
-  onBackToHome
+  onBackToHome,
+  internalView,
+  onNavigate
 }) => {
   const auth = useSelector((state) => state.auth);
-  const [internalView, setInternalView] = useState("default");
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks, no-restricted-syntax
-    // eslint-disable-next-line
-    if (activeMenu === "myalbums") setInternalView("see_all_genres");
-    // eslint-disable-next-line
-    else if (activeMenu === "myartists") setInternalView("see_all_artists");
-    // eslint-disable-next-line
-    else if (activeMenu === "recent" || activeMenu?.startsWith("artist-") || activeMenu?.startsWith("playlist-")) setInternalView("see_all_charts");
-    // eslint-disable-next-line
-    else setInternalView("default");
-  }, [activeMenu]);
+
 
   const featuredSong = songsToDisplay && songsToDisplay.length > 0 ? songsToDisplay[0] : null;
 
@@ -61,8 +52,6 @@ const MainArea = ({
     if (featuredSong) onSelectSong(0);
   };
 
-  const handleBack = () => setInternalView("default");
-
   return (
     <div className={`mainarea-root ${isSongsLoading ? "mainarea-loading" : "mainarea-loaded"}`}>
       <div className="mainarea-top">
@@ -76,7 +65,7 @@ const MainArea = ({
 
             <div className="section-header">
               <h2 className="section-title">Top Artists</h2>
-              <button className="section-see-all" onClick={() => setInternalView("see_all_artists")}>See all</button>
+              <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_artists" })}>See all</button>
             </div>
             <TopArtists artists={dynamicArtists} onSelectArtist={onSelectArtist} />
 
@@ -84,7 +73,7 @@ const MainArea = ({
               <div className="split-section">
                 <div className="section-header">
                   <h2 className="section-title">Playlists</h2>
-                  <button className="section-see-all" onClick={() => setInternalView("see_all_genres")}>See all</button>
+                  <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_genres" })}>See all</button>
                 </div>
                 <GenreGrid genres={[]} onSelectGenre={onSelectTag} />
               </div>
@@ -92,7 +81,7 @@ const MainArea = ({
               <div className="split-section">
                 <div className="section-header">
                   <h2 className="section-title">Top Charts</h2>
-                  <button className="section-see-all" onClick={() => setInternalView("see_all_charts")}>See all</button>
+                  <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_charts" })}>See all</button>
                 </div>
                 <TopCharts
                   songs={songsToDisplay.slice(0, 4)}
@@ -110,7 +99,6 @@ const MainArea = ({
         {view === "home" && internalView === "see_all_charts" && (
           <div className="expanded-view">
             <div className="expanded-header">
-              <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
               <h2>Top Charts</h2>
             </div>
             {songsToDisplay && songsToDisplay.length > 0 ? (
@@ -132,7 +120,6 @@ const MainArea = ({
         {view === "home" && internalView === "see_all_artists" && (
           <div className="expanded-view">
             <div className="expanded-header">
-              <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
               <h2>All Artists</h2>
             </div>
             {dynamicArtists && dynamicArtists.length > 0 ? (
@@ -148,7 +135,6 @@ const MainArea = ({
         {view === "home" && internalView === "see_all_genres" && (
           <div className="expanded-view">
             <div className="expanded-header">
-              <button className="back-btn" onClick={handleBack}><FaArrowLeft /> Back</button>
               <h2>All Playlists</h2>
             </div>
             <GenreGrid genres={[]} onSelectGenre={onSelectTag} />

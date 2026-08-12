@@ -12,10 +12,9 @@ import { openAuthModal } from "../../redux/slices/uiSlice";
 import toast from 'react-hot-toast';
 
 const SideMenu = ({
-  setView,
+  onNavigate,
   view,
   activeMenu,
-  setActiveMenu,
   currentSong,
   isPlaying,
   onSelectTag,
@@ -31,15 +30,13 @@ const SideMenu = ({
       dispatch(openAuthModal("login"));
       return;
     }
-    setView("favourite");
-    setActiveMenu("favourite");
+    onNavigate({ view: "favourite", activeMenu: "favourite", internalView: "default" });
   };
 
   const handleTagClick = (tag, menuName) => {
     if (onSelectTag) {
       onSelectTag(tag);
-      setView("home");
-      setActiveMenu(menuName);
+      onNavigate({ view: "home", activeMenu: menuName, internalView: "default" });
     }
   };
 
@@ -47,8 +44,7 @@ const SideMenu = ({
     if (onResetExplore) {
       onResetExplore();
     } else {
-      setView("home");
-      setActiveMenu("home");
+      onNavigate({ view: "home", activeMenu: "home", internalView: "default" });
     }
   };
 
@@ -105,21 +101,21 @@ const SideMenu = ({
         <nav className="sidemenu-nav">
           <button
             className={getNavBtnClass("recent")}
-            onClick={() => { setView("home"); setActiveMenu("recent"); }}
+            onClick={() => onNavigate({ view: "home", activeMenu: "recent", internalView: "see_all_charts" })}
           >
             <AiOutlineFolder className="sidemenu-nav-icon" size={20} />
             <span>Recent</span>
           </button>
           <button
             className={getNavBtnClass("myalbums")}
-            onClick={() => { setView("home"); setActiveMenu("myalbums"); }}
+            onClick={() => onNavigate({ view: "home", activeMenu: "myalbums", internalView: "see_all_genres" })}
           >
             <MdAlbum className="sidemenu-nav-icon" size={20} />
             <span>Albums</span>
           </button>
           <button
             className={getNavBtnClass("myartists")}
-            onClick={() => { setView("home"); setActiveMenu("myartists"); }}
+            onClick={() => onNavigate({ view: "home", activeMenu: "myartists", internalView: "see_all_artists" })}
           >
             <MdPerson className="sidemenu-nav-icon" size={20} />
             <span>Artists</span>
@@ -159,8 +155,7 @@ const SideMenu = ({
               key={playlist.id}
               className={getNavBtnClass(`playlist-${playlist.id}`)}
               onClick={() => {
-                setView("home");
-                setActiveMenu(`playlist-${playlist.id}`);
+                onNavigate({ view: "home", activeMenu: `playlist-${playlist.id}`, internalView: "see_all_charts" });
               }}
             >
               <MdQueueMusic className="sidemenu-nav-icon" size={20} />

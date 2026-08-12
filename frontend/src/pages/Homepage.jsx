@@ -16,8 +16,14 @@ import CreatePlaylistModal from "../components/playlist/CreatePlaylistModal";
 import toast from 'react-hot-toast';
 
 const Homepage = () => {
-  const [view, setView] = useState("home");
-  const [activeMenu, setActiveMenu] = useState("home");
+  const [history, setHistory] = useState([
+    { view: "home", activeMenu: "home", internalView: "default" }
+  ]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
+  const currentNavState = history[historyIndex] || { view: "home", activeMenu: "home", internalView: "default" };
+  const { view, activeMenu, internalView } = currentNavState;
+
   const [songs, setSongs] = useState([]);
   const [searchSongs, setSearchSongs] = useState([]);
   const [recentSongs, setRecentSongs] = useState([]);
@@ -28,6 +34,33 @@ const Homepage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const auth = useSelector((state) => state.auth);
   const { authModalOpen } = useSelector((state) => state.ui);
+
+  const navigate = (updates) => {
+    const nextState = { ...currentNavState, ...updates };
+    // Check if the new state is identical to current state to prevent duplicate pushes
+    if (
+      nextState.view === currentNavState.view &&
+      nextState.activeMenu === currentNavState.activeMenu &&
+      nextState.internalView === currentNavState.internalView
+    ) {
+      return;
+    }
+    const newHistory = history.slice(0, historyIndex + 1);
+    newHistory.push(nextState);
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+  };
+
+  const handleGoBack = () => {
+    if (historyIndex > 0) setHistoryIndex(historyIndex - 1);
+  };
+
+  const handleGoForward = () => {
+    if (historyIndex < history.length - 1) setHistoryIndex(historyIndex + 1);
+  };
+
+  const canGoBack = historyIndex > 0;
+  const canGoForward = historyIndex < history.length - 1;
 
   const normalizedView = (view || "").toLowerCase();
   
@@ -143,8 +176,7 @@ const Homepage = () => {
         `${import.meta.env.VITE_BASE_URL}/api/songs/artist/${encodeURIComponent(artistName)}`
       );
       setSongs(res.data.results || []);
-      setView("home");
-      setActiveMenu(`artist-${artistName}`);
+      navigate({ view: "home", activeMenu: `artist-${artistName}`, internalView: "see_all_charts" });
     } catch (error) {
       console.error("Failed to load artist songs. ", error);
       toast.error(`Failed to load songs for "${artistName}".`);
@@ -163,7 +195,7 @@ const Homepage = () => {
     if (!favourites.length) return;
     const index = auth.user.favourites.findIndex((fav) => fav.id === songs.id);
     setSongs(auth.user.favourites);
-    setView("home");
+    navigate({ view: "home", activeMenu: "home", internalView: "default" });
     setTimeout(() => {
       if (index != -1) {
         playSongAtIndex(index)
@@ -174,17 +206,14 @@ const Homepage = () => {
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query && query.trim()) {
-      setView("search");
-      setActiveMenu("search");
+      if (view !== "search") navigate({ view: "search", activeMenu: "search", internalView: "default" });
     } else {
-      setView("home");
-      setActiveMenu("home");
+      if (view === "search") navigate({ view: "home", activeMenu: "home", internalView: "default" });
     }
   };
 
   const handleResetExplore = () => {
-    setView("home");
-    setActiveMenu("home");
+    navigate({ view: "home", activeMenu: "home", internalView: "default" });
     fetchAllSongs();
   };
 
@@ -218,16 +247,19 @@ const Homepage = () => {
           onSearch={handleSearch}
           activeTab="music"
           onOpenEditProfile={() => setOpenEditProfile(true)}
+          handleGoBack={handleGoBack}
+          handleGoForward={handleGoForward}
+          canGoBack={canGoBack}
+          canGoForward={canGoForward}
         />
 
         <div className="homepage-main-wrapper">
           {/* Left Sidebar */}
           <div className="homepage-sidebar">
             <SideMenu
-              setView={setView}
+              onNavigate={navigate}
               view={normalizedView}
               activeMenu={activeMenu}
-              setActiveMenu={setActiveMenu}
               onOpenEditProfile={() => setOpenEditProfile(true)}
               currentSong={currentSong}
               isPlaying={isPlaying}
@@ -243,6 +275,8 @@ const Homepage = () => {
             <MainArea
               view={normalizedView}
               activeMenu={activeMenu}
+              internalView={internalView}
+              onNavigate={navigate}
               currentIndex={currentIndex}
 
               // Pass currentSong and isPlaying to highlight correctly
@@ -256,7 +290,6 @@ const Homepage = () => {
               songsToDisplay={songsToDisplay}
               searchQuery={searchQuery}
               isSongsLoading={isSongsLoading}
-              onBackToHome={() => setView("home")}
             />
           </div>
 
