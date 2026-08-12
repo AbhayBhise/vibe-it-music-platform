@@ -61,37 +61,45 @@ const MainArea = ({
       <div className="mainarea-scroll">
         {view === "home" && internalView === "default" && (
           <>
-            <HeroSection featuredSong={featuredSong} onPlay={handlePlayFeatured} />
+            {songsToDisplay && songsToDisplay.length > 0 ? (
+              <>
+                <HeroSection featuredSong={featuredSong} onPlay={handlePlayFeatured} />
 
-            <div className="section-header">
-              <h2 className="section-title">Top Artists</h2>
-              <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_artists" })}>See all</button>
-            </div>
-            <TopArtists artists={dynamicArtists} onSelectArtist={onSelectArtist} />
-
-            <div className="mainarea-split">
-              <div className="split-section">
                 <div className="section-header">
-                  <h2 className="section-title">Playlists</h2>
-                  <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_genres" })}>See all</button>
+                  <h2 className="section-title">Top Artists</h2>
+                  <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_artists" })}>See all</button>
                 </div>
-                <GenreGrid genres={[]} onSelectGenre={onSelectTag} />
-              </div>
+                <TopArtists artists={dynamicArtists} onSelectArtist={onSelectArtist} />
 
-              <div className="split-section">
-                <div className="section-header">
-                  <h2 className="section-title">Top Charts</h2>
-                  <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_charts" })}>See all</button>
+                <div className="mainarea-split">
+                  <div className="split-section">
+                    <div className="section-header">
+                      <h2 className="section-title">Playlists</h2>
+                      <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_genres" })}>See all</button>
+                    </div>
+                    <GenreGrid genres={[]} onSelectGenre={onSelectTag} />
+                  </div>
+
+                  <div className="split-section">
+                    <div className="section-header">
+                      <h2 className="section-title">Top Charts</h2>
+                      <button className="section-see-all" onClick={() => onNavigate({ internalView: "see_all_charts" })}>See all</button>
+                    </div>
+                    <TopCharts
+                      songs={songsToDisplay.slice(0, 4)}
+                      onSelectSong={onSelectSong}
+                      currentIndex={currentIndex}
+                      currentSong={currentSong}
+                      isPlaying={isPlaying}
+                    />
+                  </div>
                 </div>
-                <TopCharts
-                  songs={songsToDisplay.slice(0, 4)}
-                  onSelectSong={onSelectSong}
-                  currentIndex={currentIndex}
-                  currentSong={currentSong}
-                  isPlaying={isPlaying}
-                />
+              </>
+            ) : (
+              <div className="empty-state" style={{ padding: '4rem 2rem', textAlign: 'center', color: '#9ca3af' }}>
+                <h3>Sorry! Nothing to show here, Explore The site !!</h3>
               </div>
-            </div>
+            )}
           </>
         )}
 
@@ -110,8 +118,8 @@ const MainArea = ({
                 isPlaying={isPlaying}
               />
             ) : (
-              <div className="empty-state">
-                <p>No songs found.</p>
+              <div className="empty-state" style={{ padding: '4rem 2rem', textAlign: 'center', color: '#9ca3af' }}>
+                <h3>Sorry! Nothing to show here, Explore The site !!</h3>
               </div>
             )}
           </div>
@@ -125,8 +133,8 @@ const MainArea = ({
             {dynamicArtists && dynamicArtists.length > 0 ? (
               <TopArtists artists={dynamicArtists} onSelectArtist={onSelectArtist} />
             ) : (
-              <div className="empty-state">
-                <p>No artists found.</p>
+              <div className="empty-state" style={{ padding: '4rem 2rem', textAlign: 'center', color: '#9ca3af' }}>
+                <h3>Sorry! Nothing to show here, Explore The site !!</h3>
               </div>
             )}
           </div>
@@ -155,8 +163,8 @@ const MainArea = ({
                 isPlaying={isPlaying}
               />
             ) : (
-              <div className="empty-state" style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af' }}>
-                <p>No songs found for "{searchQuery}". Try a different search!</p>
+              <div className="empty-state" style={{ padding: '4rem 2rem', textAlign: 'center', color: '#9ca3af' }}>
+                <h3>Sorry! Nothing to show here, Explore The site !!</h3>
               </div>
             )}
           </>

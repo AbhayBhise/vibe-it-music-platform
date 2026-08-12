@@ -36,7 +36,7 @@ const SideMenu = ({
   const handleTagClick = (tag, menuName) => {
     if (onSelectTag) {
       onSelectTag(tag);
-      onNavigate({ view: "home", activeMenu: menuName, internalView: "default" });
+      onNavigate({ view: "home", activeMenu: menuName, internalView: "see_all_charts" });
     }
   };
 
