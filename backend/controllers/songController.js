@@ -36,7 +36,7 @@ const getPlaylistByTag = asyncHandler(async (req, res) => {
         return res.status(200).json(cache.get(cacheKey));
     }
 
-    const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${getClientId()}&format=jsonpretty&tags=${tag}&limit=${limit}`;
+    const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${getClientId()}&format=jsonpretty&fuzzytags=${tag}&limit=${limit}`;
     const response = await axios.get(url);
 
     if (response.data?.headers?.status === "failed") {

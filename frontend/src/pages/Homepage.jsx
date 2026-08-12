@@ -181,6 +181,8 @@ const Homepage = () => {
         else if (activeMenu === "albums") data = await loadPlaylist("electronic");
         else if (activeMenu === "artists") data = await loadPlaylist("rock");
         else if (activeMenu === "radio") data = await loadPlaylist("jazz");
+        else if (activeMenu === "myalbums") data = await loadPlaylist("indie");
+        else if (activeMenu === "myartists") data = await loadPlaylist("hiphop");
         else if (activeMenu?.startsWith("artist-")) data = await loadArtistSongs(activeMenu.replace("artist-", ""));
         else if (activeMenu?.startsWith("tag-")) data = await loadPlaylist(activeMenu.replace("tag-", ""));
         
