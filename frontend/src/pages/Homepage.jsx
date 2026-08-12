@@ -239,14 +239,11 @@ const Homepage = () => {
       {isSongsLoading && !authModalOpen && <LoadingOverlay isVisible={isSongsLoading} />}
       <div className="homepage-root">
         <audio ref={audioRef}
+          src={currentSong?.audio || ""}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
-          onEnded={handleEnded}>
-          {currentSong &&
-            <source
-              src={currentSong.audio}
-              type="audio/mpeg" />}
-        </audio>
+          onEnded={handleEnded}
+        />
 
         {/* Top Navigation */}
         <TopNav
