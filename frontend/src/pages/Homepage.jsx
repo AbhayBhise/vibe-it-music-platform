@@ -24,6 +24,8 @@ const Homepage = () => {
   const currentNavState = history[historyIndex] || { view: "home", activeMenu: "home", internalView: "default" };
   const { view, activeMenu, internalView } = currentNavState;
 
+  const [songsCache, setSongsCache] = useState({});
+
   const [songs, setSongs] = useState([]);
   const [searchSongs, setSearchSongs] = useState([]);
   const [recentSongs, setRecentSongs] = useState([]);
@@ -110,23 +112,14 @@ const Homepage = () => {
 
   const fetchAllSongs = async () => {
     try {
-      setIsSongsLoading(true);
-      const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/songs`,
-      );
-      setSongs(res.data.results || [])
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/songs`);
+      return res.data.results || [];
     } catch (error) {
       console.error("Error while fetching the songs", error);
       toast.error("Failed to fetch songs. Please try again later.");
-      setSongs([]);
-    } finally {
-      setIsSongsLoading(false);
+      return [];
     }
   };
-
-  useEffect(() => {
-    fetchAllSongs();
-  }, []);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -149,42 +142,55 @@ const Homepage = () => {
   }, [searchQuery]);
 
   const loadPlaylist = async (tag) => {
-    if (!tag) {
-      console.warn("No tag is provided!")
-      return;
-    }
     try {
-      setIsSongsLoading(true);
-      const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/songs/playlistByTag/${tag}`
-      );
-      setSongs(res.data.results || []);
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/songs/playlistByTag/${tag}`);
+      return res.data.results || [];
     } catch (error) {
       console.error("Failed to load playlist. ", error);
       toast.error(`Failed to load playlist "${tag}".`);
-      setSongs([]);
-    } finally {
-      setIsSongsLoading(false);
+      return [];
     }
   };
 
   const loadArtistSongs = async (artistName) => {
-    if (!artistName) return;
     try {
-      setIsSongsLoading(true);
-      const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/songs/artist/${encodeURIComponent(artistName)}`
-      );
-      setSongs(res.data.results || []);
-      navigate({ view: "home", activeMenu: `artist-${artistName}`, internalView: "see_all_charts" });
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/songs/artist/${encodeURIComponent(artistName)}`);
+      return res.data.results || [];
     } catch (error) {
       console.error("Failed to load artist songs. ", error);
       toast.error(`Failed to load songs for "${artistName}".`);
-      setSongs([]);
-    } finally {
-      setIsSongsLoading(false);
+      return [];
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { view, activeMenu } = currentNavState;
+      const cacheKey = `${view}-${activeMenu}`;
+
+      if (songsCache[cacheKey]) {
+        setSongs(songsCache[cacheKey]);
+        return;
+      }
+
+      if (view === "home") {
+        setIsSongsLoading(true);
+        let data = [];
+        if (activeMenu === "home") data = await fetchAllSongs();
+        else if (activeMenu === "genres") data = await loadPlaylist("pop");
+        else if (activeMenu === "albums") data = await loadPlaylist("electronic");
+        else if (activeMenu === "artists") data = await loadPlaylist("rock");
+        else if (activeMenu === "radio") data = await loadPlaylist("jazz");
+        else if (activeMenu?.startsWith("artist-")) data = await loadArtistSongs(activeMenu.replace("artist-", ""));
+        else if (activeMenu?.startsWith("tag-")) data = await loadPlaylist(activeMenu.replace("tag-", ""));
+        
+        setSongs(data);
+        setSongsCache(prev => ({ ...prev, [cacheKey]: data }));
+        setIsSongsLoading(false);
+      }
+    };
+    fetchData();
+  }, [currentNavState.activeMenu, currentNavState.view]);
 
   const handleSelectSong = (index) => {
     playSongAtIndex(index);
@@ -214,7 +220,6 @@ const Homepage = () => {
 
   const handleResetExplore = () => {
     navigate({ view: "home", activeMenu: "home", internalView: "default" });
-    fetchAllSongs();
   };
 
   const handleCreatePlaylist = (name) => {
@@ -263,7 +268,6 @@ const Homepage = () => {
               onOpenEditProfile={() => setOpenEditProfile(true)}
               currentSong={currentSong}
               isPlaying={isPlaying}
-              onSelectTag={loadPlaylist}
               onResetExplore={handleResetExplore}
               onCreatePlaylist={() => setOpenCreatePlaylist(true)}
               customPlaylists={customPlaylists}
@@ -284,9 +288,9 @@ const Homepage = () => {
               isPlaying={isPlaying}
 
               onSelectSong={handleSelectSong}
-              onSelectArtist={(artist) => loadArtistSongs(artist.name)}
+              onSelectArtist={(artist) => navigate({ view: "home", activeMenu: `artist-${artist.name}`, internalView: "see_all_charts" })}
               onSelectFavourite={handlePlayFavourite}
-              onSelectTag={loadPlaylist}
+              onSelectTag={(tag) => navigate({ view: "home", activeMenu: `tag-${tag}`, internalView: "see_all_charts" })}
               songsToDisplay={songsToDisplay}
               searchQuery={searchQuery}
               isSongsLoading={isSongsLoading}
