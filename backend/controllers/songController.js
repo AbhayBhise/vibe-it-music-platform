@@ -15,6 +15,10 @@ const getSongs = asyncHandler(async (req, res) => {
     const response = await axios.get(`https://api.jamendo.com/v3.0/tracks/?client_id=${getClientId()}&format=jsonpretty&limit=20`);
     const data = response.data;
     
+    if (data?.headers?.status === "failed") {
+        return res.status(400).json(data);
+    }
+    
     cache.set(cacheKey, data);
     res.status(200).json(data);
 });
@@ -34,6 +38,10 @@ const getPlaylistByTag = asyncHandler(async (req, res) => {
 
     const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${getClientId()}&format=jsonpretty&tags=${tag}&limit=${limit}`;
     const response = await axios.get(url);
+
+    if (response.data?.headers?.status === "failed") {
+        return res.status(400).json(response.data);
+    }
 
     cache.set(cacheKey, response.data);
     res.status(200).json(response.data);
@@ -72,6 +80,10 @@ const searchSongs = asyncHandler(async (req, res) => {
     const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${getClientId()}&format=jsonpretty&namesearch=${encodeURIComponent(query)}&limit=${limit}`;
     const response = await axios.get(url);
 
+    if (response.data?.headers?.status === "failed") {
+        return res.status(400).json(response.data);
+    }
+
     cache.set(cacheKey, response.data);
     res.status(200).json(response.data);
 });
@@ -91,6 +103,10 @@ const getSongsByArtist = asyncHandler(async (req, res) => {
 
     const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${getClientId()}&format=jsonpretty&artist_name=${encodeURIComponent(artistName)}&limit=${limit}`;
     const response = await axios.get(url);
+
+    if (response.data?.headers?.status === "failed") {
+        return res.status(400).json(response.data);
+    }
 
     cache.set(cacheKey, response.data);
     res.status(200).json(response.data);

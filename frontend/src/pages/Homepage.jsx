@@ -185,7 +185,9 @@ const Homepage = () => {
         else if (activeMenu?.startsWith("tag-")) data = await loadPlaylist(activeMenu.replace("tag-", ""));
         
         setSongs(data);
-        setSongsCache(prev => ({ ...prev, [cacheKey]: data }));
+        if (data && data.length > 0) {
+          setSongsCache(prev => ({ ...prev, [cacheKey]: data }));
+        }
         setIsSongsLoading(false);
       }
     };
