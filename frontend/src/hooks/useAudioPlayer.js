@@ -51,11 +51,13 @@ const useAudioPlayer = (songs = []) => {
 
     const handleTogglePlay = useCallback(async () => {
         const audio = audioRef.current;
-        if (!audio) return;
+        if (!audio || !audioState.currentSong) return;
 
         try {
             if (audio.paused) {
-                if (playPromiseRef.current) await playPromiseRef.current;
+                if (playPromiseRef.current) {
+                    await playPromiseRef.current.catch(() => {});
+                }
                 playPromiseRef.current = audio.play();
                 await playPromiseRef.current;
                 dispatch({ type: "PLAY" });
@@ -64,9 +66,11 @@ const useAudioPlayer = (songs = []) => {
                 dispatch({ type: "PAUSE" });
             }
         } catch (error) {
-            console.error("Toggle Play Error:", error);
+            if (error.name !== "AbortError") {
+                console.error("Toggle Play Error:", error);
+            }
         }
-    }, []);
+    }, [audioState.currentSong]);
 
     // Play a song at specific index value
     const playSongAtIndex = useCallback(async (index) => {
@@ -92,36 +96,36 @@ const useAudioPlayer = (songs = []) => {
         });
 
         dispatch({ type: "SET_CURRENT_TIME", payload: 0 });
+    }, [songs, audioState.currentSong, handleTogglePlay]);
 
+    // Handle playing when currentSong changes
+    useEffect(() => {
         const audio = audioRef.current;
-        if (!audio) return;
+        if (!audio || !audioState.currentSong) return;
 
-        try {
-            dispatch({ type: "LOADING" });
-            audio.load();
-            audio.playbackRate = audioState.playbackSpeed;
-            audio.volume = audioState.volume;
+        const playAudio = async () => {
+            try {
+                dispatch({ type: "LOADING" });
+                audio.playbackRate = audioState.playbackSpeed;
+                audio.volume = audioState.volume;
 
-            // Handle Play Promise to avoid race conditions
-            if (playPromiseRef.current) {
+                if (playPromiseRef.current) {
+                    await playPromiseRef.current.catch(() => {});
+                }
+
+                playPromiseRef.current = audio.play();
                 await playPromiseRef.current;
+                dispatch({ type: "PLAY" });
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    console.error("Play Error:", error);
+                    dispatch({ type: "PAUSE" });
+                }
             }
+        };
 
-            playPromiseRef.current = audio.play();
-            await playPromiseRef.current;
-            dispatch({ type: "PLAY" });
-            await playPromiseRef.current;
-            dispatch({ type: "PLAY" });
-        } catch (error) {
-            // Ignore AbortError as it's expected during rapid song switching
-            if (error.name === "AbortError") {
-                // console.log("Play aborted");
-            } else {
-                console.error("Play Error:", error);
-                dispatch({ type: "PAUSE" });
-            }
-        }
-    }, [songs, audioState.playbackSpeed, audioState.volume, audioState.currentSong, handleTogglePlay]);
+        playAudio();
+    }, [audioState.currentSong]);
 
     const handleNext = useCallback(() => {
         if (!songs.length) return;
