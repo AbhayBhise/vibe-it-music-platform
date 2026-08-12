@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState, useCallback } from "react";
+import { useReducer, useRef, useState, useCallback, useEffect } from "react";
 
 const initialAudioState = {
     isPlaying: false,
